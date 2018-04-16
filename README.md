@@ -11,10 +11,9 @@ In this lab, you will walk through building different types of applications leve
 ## Demos
 
 - [Console application](./Demos/01-console-application)
-- [JavaScript application](./Demos/02-javascript-application)
-- [Azure Function](./Demos/03-azure-function)
-- [Xamarin mobile app](./Demos/04-xamarin-app)
-
+- [JavaScript application](./Demos/02-angular-connect-rest)
+- [Azure Function](./Demos/03-dotnet-daemon)
+- [Xamarin mobile app](./Demos/04-xamarin-application)
 ## Contributors
 
 |        Roles         |                            Author(s)                             |

@@ -5,9 +5,9 @@ This folder contains demos for the Building Microsoft Graph Applications module.
 ## Demos
 
 - [Console application](./01-console-application)
-- [JavaScript application](./02-javascript-application)
+- [JavaScript application](./02-angular-connect-rest)
 - [Azure Function](./03-dotnet-daemon)
-- [Xamarin mobile app](./04-xamarin-app)
+- [Xamarin mobile app](./04-xamarin-application)
 
 ## Running demonstrations
 
