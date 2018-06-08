@@ -25,7 +25,7 @@ This module has been recorded and is available in the Office Development YouTube
 | -------------------- | ---------------------------------------------------------------- |
 | Lab Manuals / Slides | Andrew Connell (Microsoft MVP, Voitanos) @andrewconnell          |
 | QA                   | Julie Turner (Microsoft MVP, Sympraxis Consulting) @juliemturner |
-| Sponsor / Support    | Mike Ammerlaan (Microsoft) @mammerla                             |
+| Sponsor / Support    | Yina Arenas (Microsoft) @yina_arenas                             |
 
 ## Version history
 
