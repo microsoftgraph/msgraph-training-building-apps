@@ -1,854 +1,854 @@
-# Microsoft Graph: Building Microsoft Graph Applications - 200 Level
+# Lab: Building Microsoft Graph Applications
 
-In this lab, you will walk through building applications that connect with the Microsoft Graph API using multiple technologies. 
+In this lab, you will walk through building applications that connect with the Microsoft Graph API using multiple technologies.
 
-## Table of Contents
+## In this lab
 
-1. [Build a .NET console application using Microsoft Graph](#dotnetconsoleapp)
-1. [Build a JavaScript application using Microsoft Graph](#javascriptapp)
-1. [Build an Azure Function using Microsoft Graph](#azurefunction)
-1. [Build a mobile application with Xamarin using Microsoft Graph](#xamarinapp)
+1. [Build a .NET console application using Microsoft Graph](#Exercise_1:_Build_a_.NET_console_application_using_Microsoft_Graph)
+1. [Build a JavaScript application using Microsoft Graph](#Exercise_2:_Build_a_JavaScript_application_using_Microsoft_Graph)
+1. [Build an Azure Function using Microsoft Graph](#Exercise_3:_Build_an_Azure_Function_using_Microsoft_Graph)
+1. [Build a mobile application with Xamarin using Microsoft Graph](#Exercise_4:_Create_a_mobile_app_with_Xamarin_using_Microsoft_Graph)
 
 ## Prerequisites
 
-This lab uses Visual Studio 2017, and in the case of the part 4, will require Windows 10. It also requires an **Azure Active Directory** tenant and a user with administrative privileges.
+This lab uses Visual Studio 2017. Exercise 4 requires Windows 10. It also requires an **Azure Active Directory** tenant and a user with administrative privileges.
 
 ## Setup
 
-Open the Visual Studio Installer and enable the **.NET desktop development**, **Mobile development with .NET**, **Azure development**,and **Universal Windows Platform development** features. Make sure to update Visual Studio 2017 to the latest version, and update VSIX packages (Tools / Extensions and Updates).
+Open the Visual Studio installer and enable the **.NET desktop development**, **Mobile development with .NET**, **Azure development**,and **Universal Windows Platform development** features. Make sure to update Visual Studio 2017 to the latest version, and update VSIX packages (Tools > Extensions and Updates).
 
-<a name="dotnetconsoleapp"></a>
+## Exercise 1: Build a .NET console application using Microsoft Graph
 
-## 1. Build a .NET console application using Microsoft Graph
-
-This lab will walk you through creating a .NET console application from scratch using .NET Framework 4.7.0, the Microsoft Graph SDK, and the Microsoft Authentication Library (MSAL).
+In this exercise you will create a .NET console application from scratch using .NET Framework 4.7.0, the Microsoft Graph SDK, and the Microsoft Authentication Library (MSAL).
 
 ### Register the application
 
-Visit the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
+1. Go to the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
 
-Click the **Add an app** button.
+1. Select the **Add an app** button.
 
-![](Images/01.png)
+    ![Screenshot of the Application Registration Portal.](Images/01.png)
 
-On the next page, provide an application name.  Click **Create**.
+1. On the next page, provide an application name. Select the **Create** button.
 
-![](Images/02.png)
+    ![Screenshot of the Application Registration Portal registration page.](Images/02.png)
 
-Once the application is created, an Application Id is provided on the screen. **Copy this ID**, you will use it as the Client ID within the console application's `app.config` file.
+1. After the application is created, an app ID is shown on the screen. Copy this ID. You will use it as the client ID within the console application's **app.config** file.
 
-![](Images/03.png)
+    ![Screenshot of the registration page with the application ID highlighted.](Images/03.png)
 
-Click the **Add Platform** button. A popup is presented, choose **Native Application**.
-![](Images/03b.png)
+1. Select the **Add Platform** button on the registration page. Choose **Native Application** in the dialog box.
 
-Once completed, be sure to scroll to the bottom of the page and **save** all changes.
+    ![Screenshot of Add Platform dialog box with Native application highlighted.](Images/03b.png)
 
-![](Images/03f.png)
+1. Once completed, move to the bottom of the page and select **Save**.
+
+    ![Screenshot highlighting save button.](Images/03f.png)
 
 ### Create the project in Visual Studio 2017
 
-In Visual Studio 2017, create a new **Console Application** project targeting .NET Framework 4.7.
+1. In Visual Studio 2017, create a new **Console Application** project targeting .NET Framework 4.7.
 
-![](Images/04.png)
+    ![Screenshot of Visual Studio 2017 new project menu.](Images/04.png)
 
-Click Tools / NuGet Package Manager / **Package Manager Console**. In the console window, run the following commands:
+1. Select **Tools > NuGet Package Manager > Package Manager Console**. In the console window, run the following commands:
 
-````powershell
-Install-Package "Microsoft.Graph"
-Install-Package "Microsoft.Identity.Client" -pre
-Install-Package "System.Configuration.ConfigurationManager"
-````
+    ```powershell
+    Install-Package "Microsoft.Graph"
+    Install-Package "Microsoft.Identity.Client" -pre
+    Install-Package "System.Configuration.ConfigurationManager"
+    ```
 
-Edit the app.config file, and immediately before the &lt;/configuration&gt; element, add the following element:
+1. Edit the **app.config** file, and immediately before the `/configuration` element, add the following element:
 
-````xml
-<appSettings>
-    <add key="clientId" value="a943d247-89a1-4a21-9a62-c9714056c456"/>
-</appSettings>
-````
+    ```xml
+    <appSettings>
+        <add key="clientId" value="a943d247-89a1-4a21-9a62-c9714056c456"/>
+    </appSettings>
+    ```
 
-Make sure to **replace** the value with the **Application ID** value provided from the Application Registration Portal.
+    >Note: Make sure to replace the value with the **Application ID** value provided from the Application Registration Portal.
 
 ### Add AuthenticationHelper.cs
 
-Add a class to the project named **AuthenticationHelper.cs**. This class will be responsible for authenticating using the Microsoft Authentication Library (MSAL), which is the **Microsoft.Identity.Client** package that we installed.
+1. Add a class to the project named **AuthenticationHelper.cs**. This class will be responsible for authenticating using the Microsoft Authentication Library (MSAL), which is the **Microsoft.Identity.Client** package that we installed.
 
-Replace the using statement at the top of the file.
+1. Replace the `using` statement at the top of the file.
 
-````csharp
-using Microsoft.Graph;
-using Microsoft.Identity.Client;
-using System;
-using System.Configuration;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-````
+    ```csharp
+    using Microsoft.Graph;
+    using Microsoft.Identity.Client;
+    using System;
+    using System.Configuration;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Net.Http.Headers;
+    using System.Threading.Tasks;
+    ```
 
-Replace the class declaration with the following.
+1. Replace the `class` declaration with the following:
 
-````csharp
-public class AuthenticationHelper
-{
-    // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
-    static string clientId = ConfigurationManager.AppSettings["clientId"].ToString();
-    public static string[] Scopes = { "User.Read" , "User.ReadBasic.All"};
-
-    public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
-
-    private static GraphServiceClient graphClient = null;
-
-    // Get an access token for the given context and resourceId. An attempt is first made to 
-    // acquire the token silently. If that fails, then we try to acquire the token by prompting the user.
-    public static GraphServiceClient GetAuthenticatedClient()
+    ```csharp
+    public class AuthenticationHelper
     {
-        if (graphClient == null)
+        // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
+        static string clientId = ConfigurationManager.AppSettings["clientId"].ToString();
+        public static string[] Scopes = { "User.Read" , "User.ReadBasic.All"};
+
+        public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
+
+        private static GraphServiceClient graphClient = null;
+
+        // Get an access token for the given context and resourceId. An attempt is first made to
+        // acquire the token silently. If that fails, then we try to acquire the token by prompting the user.
+        public static GraphServiceClient GetAuthenticatedClient()
         {
-            // Create Microsoft Graph client.
+            if (graphClient == null)
+            {
+                // Create Microsoft Graph client.
+                try
+                {
+                    graphClient = new GraphServiceClient(
+                        "https://graph.microsoft.com/v1.0",
+                        new DelegateAuthenticationProvider(
+                            async (requestMessage) =>
+                            {
+                                var token = await GetTokenForUserAsync();
+                                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", token);
+                            }));
+                    return graphClient;
+                }
+
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Could not create a graph client: " + ex.Message);
+                }
+            }
+
+            return graphClient;
+        }
+
+        /// <summary>
+        /// Get Token for User.
+        /// </summary>
+        /// <returns>Token for user.</returns>
+        public static async Task<string> GetTokenForUserAsync()
+        {
+            AuthenticationResult authResult = null;
             try
             {
-                graphClient = new GraphServiceClient(
-                    "https://graph.microsoft.com/v1.0",
-                    new DelegateAuthenticationProvider(
-                        async (requestMessage) =>
-                        {
-                            var token = await GetTokenForUserAsync();
-                            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", token);
-                        }));
-                return graphClient;
+                authResult = await IdentityClientApp.AcquireTokenSilentAsync(Scopes, IdentityClientApp.Users.FirstOrDefault());
+                return authResult.AccessToken;
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // A MsalUiRequiredException happened on AcquireTokenSilentAsync.
+                //This indicates you need to call AcquireTokenAsync to acquire a token
+
+                authResult = await IdentityClientApp.AcquireTokenAsync(Scopes);
+
+                return authResult.AccessToken;
             }
 
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Could not create a graph client: " + ex.Message);
-            }
         }
 
-        return graphClient;
+        /// <summary>
+        /// Signs the user out of the service.
+        /// </summary>
+        public static void SignOut()
+        {
+            foreach (var user in IdentityClientApp.Users)
+            {
+                IdentityClientApp.Remove(user);
+            }
+            graphClient = null;
+
+        }
     }
+    ```
 
+### Get the current user's profile using the Microsoft Graph SDK
 
+The Microsoft Graph API makes it easy to obtain the currently logged in user's profile. This sample uses our `AuthenticationHelper.cs` class to obtain an authenticated client before accessing the `/me` endpoint alias.
+
+1. Edit the `Program.cs` class and replace the generated using statements with the following:
+
+    ```csharp
+    using Microsoft.Graph;
+    using Newtonsoft.Json.Linq;
+    using System;
+    using System.Diagnostics;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    ```
+
+1. To get the currently logged in user's profile information, add the following method:
+
+   ```csharp
     /// <summary>
-    /// Get Token for User.
+    /// Gets the currently logged in user's profile information
     /// </summary>
-    /// <returns>Token for user.</returns>
-    public static async Task<string> GetTokenForUserAsync()
+    public static async Task<User> GetMeAsync()
     {
-        AuthenticationResult authResult = null;
+        User currentUserObject = null;
         try
         {
-            authResult = await IdentityClientApp.AcquireTokenSilentAsync(Scopes, IdentityClientApp.Users.FirstOrDefault());
-            return authResult.AccessToken;
+            var graphClient = AuthenticationHelper.GetAuthenticatedClient();
+            currentUserObject = await graphClient.Me.Request().GetAsync();
+
+            Debug.WriteLine("Got user: " + currentUserObject.DisplayName);
+            return currentUserObject;
         }
-        catch (MsalUiRequiredException ex)
+
+        catch (ServiceException e)
         {
-            // A MsalUiRequiredException happened on AcquireTokenSilentAsync. 
-            //This indicates you need to call AcquireTokenAsync to acquire a token
-
-            authResult = await IdentityClientApp.AcquireTokenAsync(Scopes);
-
-            return authResult.AccessToken;
+            Debug.WriteLine("We could not get the current user: " + e.Error.Message);
+            return null;
         }
-
     }
-
-    /// <summary>
-    /// Signs the user out of the service.
-    /// </summary>
-    public static void SignOut()
-    {
-        foreach (var user in IdentityClientApp.Users)
-        {
-            IdentityClientApp.Remove(user);
-        }
-        graphClient = null;        
-
-    }
-}
-````
-
-### Get the current user's profile using the Graph SDK
-
-The Microsoft Graph API makes it easy to interrogate the currently logged in user's profile. This sample uses our `AuthenticationHelper.cs` class to obtain an authenticated client before accessing the Me endpoint alias. 
-
-**Edit** the `Program.cs` class and replace the generated using statements with the following:
-
-````csharp
-using Microsoft.Graph;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Threading.Tasks;
-````
-
-To get the currently logged in user's profile information, **add** the following method: 
-
-````csharp
-/// <summary>
-/// Gets the currently logged in user's profile information
-/// </summary>        
-public static async Task<User> GetMeAsync()
-{
-    User currentUserObject = null;
-    try
-    {
-        var graphClient = AuthenticationHelper.GetAuthenticatedClient();
-        currentUserObject = await graphClient.Me.Request().GetAsync();    
-
-        Debug.WriteLine("Got user: " + currentUserObject.DisplayName);
-        return currentUserObject;
-    }
-
-    catch (ServiceException e)
-    {
-        Debug.WriteLine("We could not get the current user: " + e.Error.Message);
-        return null;
-    }
-}
-````
+    ```
 
 ### Get the users related to the current user using a REST API
 
-The Microsoft Graph API provides REST endpoints to access information and traverse relationships. One such endpoint is the me/people endpoint that provides information about people closely related to the current user. This method demonstrates accessing the underlying `System.Net.HttpClient` to add an access token in the Authorization header and to configure the URL for the request.
+The Microsoft Graph API provides REST endpoints to access information and traverse relationships. One such endpoint is the `me/people` endpoint that provides information about people closely related to the current user. The following method demonstrates accessing the underlying `System.Net.HttpClient` to add an access token in the authorization header and to configure the URL for the request.
 
-````csharp
-/// <summary>
-/// Get people near me.  Demonstrates using HttpClient to call the 
-/// Graph API.
-/// </summary>
-/// <returns></returns>
-static async Task<string> GetPeopleNearMe()
-{
-    try
+```csharp
+    /// <summary>
+    /// Get people near me.  Demonstrates using HttpClient to call the
+    /// Graph API.
+    /// </summary>
+    /// <returns></returns>
+    static async Task<string> GetPeopleNearMe()
     {
-        //Get the Graph client
-        var graphClient = AuthenticationHelper.GetAuthenticatedClient();
+        try
+        {
+            //Get the Graph client
+            var graphClient = AuthenticationHelper.GetAuthenticatedClient();
 
-        var token = await AuthenticationHelper.GetTokenForUserAsync();
+            var token = await AuthenticationHelper.GetTokenForUserAsync();
 
-        var request = new HttpRequestMessage(HttpMethod.Get, graphClient.BaseUrl + "/me/people");
-        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            var request = new HttpRequestMessage(HttpMethod.Get, graphClient.BaseUrl + "/me/people");
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        var response = await graphClient.HttpProvider.SendAsync(request);
-        var bodyContents = await response.Content.ReadAsStringAsync();
+            var response = await graphClient.HttpProvider.SendAsync(request);
+            var bodyContents = await response.Content.ReadAsStringAsync();
 
-        Debug.WriteLine(bodyContents);
-        return bodyContents;
+            Debug.WriteLine(bodyContents);
+            return bodyContents;
+        }
+
+        catch (Exception e)
+        {
+            Debug.WriteLine("Could not get people: " + e.Message);
+            return null;
+        }
     }
+```
 
-    catch (Exception e)
-    {
-        Debug.WriteLine("Could not get people: " + e.Message);
-        return null;
-    }
-}
-````
 
 ### Putting it all together
 
-The methods we created use the async/await pattern. Create an async method named **RunAsync** with the following implementation:
+The methods we created use the **async/await** pattern.
 
-````csharp
-static async Task RunAsync()
-{
-    //Display information about the current user
-    Console.WriteLine("Get My Profile");
-    Console.WriteLine();
+1. Create an async method named **RunAsync** with the following implementation:
 
-    var me = await GetMeAsync();
-
-    Console.WriteLine(me.DisplayName);
-    Console.WriteLine("User:{0}\t\tEmail:{1}", me.DisplayName, me.Mail);
-    Console.WriteLine();
-
-    //Display information about people near me
-    Console.WriteLine("Get People Near Me");
-
-    var peopleJson = await GetPeopleNearMe();
-    dynamic people = JObject.Parse(peopleJson);
-    if(null != people)
+    ```csharp
+    static async Task RunAsync()
     {
-        foreach(var p in people.value)
+        //Display information about the current user
+        Console.WriteLine("Get My Profile");
+        Console.WriteLine();
+
+        var me = await GetMeAsync();
+
+        Console.WriteLine(me.DisplayName);
+        Console.WriteLine("User:{0}\t\tEmail:{1}", me.DisplayName, me.Mail);
+        Console.WriteLine();
+
+        //Display information about people near me
+        Console.WriteLine("Get People Near Me");
+
+        var peopleJson = await GetPeopleNearMe();
+        dynamic people = JObject.Parse(peopleJson);
+        if(null != people)
         {
-            var personType = p.personType;
-            Console.WriteLine("Object:{0}\t\t\t\tClass:{1}\t\tSubclass:{2}", p.displayName, personType["class"], personType.subclass);
+            foreach(var p in people.value)
+            {
+                var personType = p.personType;
+                Console.WriteLine("Object:{0}\t\t\t\tClass:{1}\t\tSubclass:{2}", p.displayName, personType["class"], personType.subclass);
+            }
         }
     }
-}
-````
+    ```
 
-Finally, update the Main method to call the `RunAsync()` method.
+1. Update the main method to call the `RunAsync()` method.
 
-````csharp
-static void Main(string[] args)
-{
-    RunAsync().GetAwaiter().GetResult();
-    Console.WriteLine("Press any key to close");
-    Console.ReadKey();
-}
-````
+    ```csharp
+    static void Main(string[] args)
+    {
+        RunAsync().GetAwaiter().GetResult();
+        Console.WriteLine("Press any key to close");
+        Console.ReadKey();
+    }
+    ```
 
-Run the application. You are prompted to log in.
+1. Run the application and log in when prompted.
 
-![](Images/05.png)
+    ![Screenshot of login prompt from Azure AD.](Images/05.png)
 
-The first time you run it you will also be prompted to consent to the permissions the application is requesting.
+    >Note: The first time you run it, you will also be prompted to consent to the permissions the application is requesting.
 
-![](Images/05_1.png)
+    ![Screenshot of permissions request from Azure AD.](Images/05_1.png)
 
-After the application runs, you will see output similar to the output shown here.
+1. After the application runs, you will see output similar to the output shown here.
 
-![](Images/06.png)
+    ![Screenshot of output in console app.](Images/06.png)
 
-<a name="javascriptapp"></a>
-
-## 2. Build a JavaScript application using Microsoft Graph
+## Exercise 2: Build a JavaScript application using Microsoft Graph
 
 There are many sample applications that demonstrate how to use the Microsoft Graph API and the Microsoft Graph SDK available online. This lab will walk you through creating a JavaScript application leveraging the QuickStart project template to quickly get started.
 
 ### Register the application
 
-Just like in the previous lab, start by visiting the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
+1. Start by visiting the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
 
-![](Images/07.png)
+    ![Screenshot of Application Registration Portal registration page.](Images/07.png)
 
-**Copy** the application ID, you'll use this to configure the app.
+1. Copy the app ID. You will use this to configure the app.
 
-Under platforms, choose **Add Platform / Web**. Make sure the **Allow Implicit Flow** checkbox is selected, and enter http://localhost:8080 as the redirect URI. Make sure to save changes.
+1. Under the platform menu, choose **Add Platform > Web**. Make sure the **Allow Implicit Flow** checkbox is selected, and enter **http://localhost:8080** as the redirect URL. Make sure to save your changes.
 
-![](Images/08.png)
+    ![Screenshot of platforms menu.](Images/08.png)
 
 ### Create the application
 
-As stated previously, we will use a QuickStart application to demonstrate working with AngularJS and the v2 endpoint. 
+You will use a QuickStart application to demonstrate working with AngularJS and the Azure AD v2 endpoint.
 
-**Download/Clone** the [Microsoft Graph Connect Sample for AngularJS](https://github.com/microsoftgraph/angular-connect-rest-sample) and open it in a code editor of your choice. Note this solution requires that you've installed Node.js, please see the prerequisites in the README.md file for more information.
+1. Download/clone the [Microsoft Graph connect sample for AngularJS](https://github.com/microsoftgraph/angular-connect-rest-sample) and open it in a code editor of your choice.
+    >Note: This solution requires that you've installed Node.js. Please see the prerequisites in the README.md file for more information.
 
-Edit the `config.js` file in public/scripts and replace the **clientID** placeholder with the placeholder of your application.
+1. Edit the **config.js** file in **[public/scripts](https://github.com/microsoftgraph/angular-connect-rest-sample/tree/master/public/scripts)** and replace the `clientID` placeholder with the placeholder of your application.
 
-In a command prompt, change to the **root directory** and run the following:
+1. In a command prompt, change to the **root directory** and run the following:
 
-````shell
-npm install
-````
+    ```shell
+    npm install
+    ```
 
-Once installed, start the application by typing:
+1. Once installed, start the application by typing:
 
-````shell
-npm start
-````
+    ```shell
+    npm start
+    ```
 
-Note that you may receive an error similar to "npm WARN This failure might be due to the use of legacy binary 'node'. To work around this, install the nodejs-legacy package.
+1. You may receive an error similar to **"npm WARN"** This failure might be due to the use of legacy binary 'node'. To work around this, install the `nodejs-legacy package`.
 
-````shell
-sudo apt-get install nodejs-legacy
-````
+    ```shell
+    sudo apt-get install nodejs-legacy
+    ```
 
-The command window will show that the application is now listening on port 8080.  Open a browser and type in the url localhost:8080. The application displays the following dialog box and prompts you to click **Connect**.
+1. The command window will show that the application is now listening on **port 8080**. Open a browser and type in **http://localhost:8080**. The application displays a dialog box and prompts you to connect.
 
-![](Images/09.png)
+    ![Screenshot of connection prompt in Microsoft Graph sample.](Images/09.png)
 
-You are prompted to log in. Once logged in, you are prompted to grant the permissions requested by the application.
+1. Log in when prompted. Once logged in, grant the permissions requested by the application by selecting **Accept**. The application reads the current user's display name and enables you to send an email.
 
-![](Images/10.png)
+    ![Screenshot of permission request from app.](Images/10.png)
 
-Click **Accept**. The application reads the current user's display name and enables you to send an email.
+    ![Screenshot of confirmation message in Microsoft Graph app.](Images/11.png)
 
-![](Images/11.png)
+1. Inspect the code to see how this was accomplished. The application is hosted as a **Node.js** application that uses **AngularJS**. The `index.html` page defines the **ng-app** element and loads the files in the scripts directory as well as the **mainController.js** file.
 
-Inspect the code to see how this was accomplished.
+    The **graphHelper.js** file contains the code that obtains the token and calls the Microsoft Graph API. An **HTTP GET** is issued to obtain the current user's profile, and an **HTTP POST** is issued to send email on behalf of the current user.
 
-The application is hosted as a Node.js application that uses AngularJS. The `index.html` page defines the ng-app element and loads the files in the scripts directory as well as the `mainController.js` file.
+    ```javascript
+    // Get the profile of the current user.
+    me: function me() {
+        return $http.get('https://graph.microsoft.com/v1.0/me');
+    },
 
-The `graphHelper.js` file contains the code that obtains the token and calls the Graph API. An HTTP GET is issued to obtain the current user's profile, and an HTTP POST is issued to send email on behalf of the current user.
+    // Send an email on behalf of the current user.
+    sendMail: function sendMail(email) {
+        return $http.post('https://graph.microsoft.com/v1.0/me/sendMail', { 'message' : email, 'saveToSentItems': true });
+    }
+     ```
 
-````javascript
-// Get the profile of the current user.
-me: function me() {
-    return $http.get('https://graph.microsoft.com/v1.0/me');
-},
+## Exercise 3: Build an Azure Function using Microsoft Graph
 
-// Send an email on behalf of the current user.
-sendMail: function sendMail(email) {
-    return $http.post('https://graph.microsoft.com/v1.0/me/sendMail', { 'message' : email, 'saveToSentItems': true });
-}
-````
+This exercise will build an Azure Function that runs on a scheduled basis to obtain all the users in the directory.
 
-<a name="azurefunction"></a>
-
-## 3. Build an Azure Function using Microsoft Graph
-
-This lab will build an Azure Function that runs on a scheduled basis to obtain all the users in the directory.
-
-This solution will require an organizational account. An admin is required to provide consent. To facilitate this, we will start with an existing solution. Once we have tested that our app is successfully authenticating and retrieving users, we will implement an Azure Function that synchronizes users.
+This solution will require an organizational account. An admin is required to provide consent. To facilitate this, you will start with an existing solution. Once you have tested that the app is successfully authenticating and retrieving users, you will implement an Azure Function that synchronizes users.
 
 ### Download and configure the starter application
 
-Clone or download the following project:
+1. Clone or download the following project: [Build a multi-tenant daemon with the Azure AD v2.0 endpoint](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2)
 
-- [Build a multi-tenant daemon with the v2.0 endpoint](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2)
+1. Open the [Application Registration Portal](https://apps.dev.microsoft.com) and register a new application:
 
-Visit the [Application Registration Portal](https://apps.dev.microsoft.com) and register a new application:
+1. Copy the **App ID** assigned to your app.
 
-- Copy the **Application Id** assigned to your app.
-- Generate an **Application Secret** of the type **password**, and copy it for later. Note that in production apps you should always use certificates as your application secrets, but for this sample we will use a simple shared secret password.
-- Add the **Web** platform for your app.
-- Enter two **Redirect URI**s:
-  - `https://localhost:44316/`, and
-  - `https://localhost:44316/Account/GrantPermissions`
+1. Generate an **app secret** of the type **password**, and copy it for later. In production apps you should always use certificates as your app secrets, but for this sample you will use a simple shared secret password.
+
+1. Add the **Web** platform for your app.
+
+1. Enter two **Redirect URIs**:
+    - **https://localhost:44316/**
+    - **https://localhost:44316/Account/GrantPermissions**
 
 ### Configure your app for admin consent
 
-In order to use the v2.0 admin consent endpoint, you'll need to declare the application permissions your app will use ahead of time. While still in the registration portal,
+1. In order to use the Azure AD v2.0 admin consent endpoint, you'll need to declare the application permissions your app will use ahead of time. While still in the registration portal, locate the **Microsoft Graph Permissions** section on your app registration. Under **Application Permissions**, add the **User.Read.All** permission. Be sure to save your app registration.
 
-- Locate the **Microsoft Graph Permissions** section on your app registration.
-- Under **Application Permissions**, add the `User.Read.All` permission.
-- Be sure to **Save** your app registration.
-
-Once you've downloaded the sample, open it using Visual Studio. Open the `App_Start\Startup.Auth.cs` file, and replace the following values:
-
-- Replace the `clientId` value with the application ID you copied above.
-- Replace the `clientSecret` value with the application secret you copied above.
+1. After downloading the sample, open it using Visual Studio 2017. Open the **App_Start\Startup.Auth.cs** file, and replace the `clientId` value with the app ID you copied above. Replace the `clientSecret` value with the app secret you copied above.
 
 ### Run the sample
 
-Start the application called **UserSync**, and begin by signing in as an administrator in your Azure AD tenant. If you don't have an Azure AD tenant for testing, you can [follow these instructions](https://azure.microsoft.com/documentation/articles/active-directory-howto-tenant/) to get one.
+1. Start the application called **UserSync**. Sign in as an administrator in your Azure AD tenant. If you don't have an Azure AD tenant for testing, you can [follow these instructions](https://azure.microsoft.com/documentation/articles/active-directory-howto-tenant/) to get one.
 
-When the app loads, click the **Get Started** button.
+1. When the app loads, select the **Get Started** button.
 
-On the next page, click **Sign In**.
+1. On the next page, select **Sign In**. The app will ask you for permission to sign you in & read your user profile. This allows the application to ensure that you are a business user. The application will then try to sync a list of users from your Azure AD tenant via the Microsoft Graph. If it is unable to do so, it asks you (the tenant administrator) to connect your tenant to the application.
 
-When you sign in, the app will first ask you for permission to sign you in & read your user profile. This allows the application to ensure that you are a business user. The application will then try to sync a list of users from your Azure AD tenant via the Microsoft Graph. If it is unable to do so, it asks you (the tenant administrator) to connect your tenant to the application.
+1. The application will ask for permission to read the list of users in your tenant. When you grant the permission, the application is able to query for users at any point. You can verify this by selecting the **Sync Users** button on the users page to refresh the list of users. Try adding or removing a user and re-syncing the list but note that it only syncs the first page of users.
 
-The application then asks for permission to read the list of users in your tenant. When you grant the permission, the application is able to query for users at any point. You can verify this by clicking the **Sync Users** button on the users page to refresh the list of users. Try adding or removing a user and re-syncing the list (but note that it only syncs the first page of users).
-
-> **Note:** There is approximately a 20 minute data replication delay between the time when an application is granted admin consent and when the data can successfully synchronize. For more information, see: https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2/issues/1
+    >Note: There is approximately a 20 minute data replication delay between the time when an application is granted admin consent and when the data can successfully synchronize. For more information, read this [issue](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2/issues/1).
 
 ### Create the Azure Function project
 
-Visual Studio 2017 provides new tooling to simplify the creation of Azure Functions while enabling local debugging. Under the **Visual C#/Cloud** node in the tree, choose the **Azure Functions** project template.
+Visual Studio 2017 provides new tooling to simplify the creation of Azure Functions while enabling local debugging.
 
-![](Images/12.png)
+1. Under the **Visual C#/Cloud** node in the tree, choose the **Azure Functions** project template.
 
-For details on creating Azure Functions using Visual Studio, see [Azure Functions Tools for Visual Studio](https://docs.microsoft.com/en-us/azure/azure-functions/functions-develop-vs).
+    ![Screenshot of Visual Studio menu.](Images/12.png)
 
-Select **Timer trigger** and change the schedule to the following format:
+    >Note: For more details on creating Azure Functions using Visual Studio, see [Azure Functions tools for Visual Studio](https://docs.microsoft.com/en-us/azure/azure-functions/functions-develop-vs).
 
-````
-*/30 * * * * *
-````
+1. Select **Timer trigger** and change the schedule to the following format:
 
-![](Images/13.png)
+    ```
+    */30 * * * * *
+    ```
 
-In the **NuGet Package Manager Console**, run the following commands to install the required packages.
+    ![Screenshot of AzureSyncFunction with Timer trigger highlighted.](Images/13.png)
 
-````powershell
-Install-Package "Microsoft.Graph"
-Install-Package "Microsoft.Identity.Client" -pre
-Install-Package "System.Configuration.ConfigurationManager"
-````
+1. In the **NuGet Package Manager Console**, run the following command to install the required packages.
 
-Edit the `local.settings.json` file and add the following items to use while debugging locally. Note: **AzureWebJobsStorage** and **AzureWebJobsDashboard** will already be set with `UserDevelopmentStorage=true` because you chos **Storage Emulator** as the Storage Account during project creation.
+    ```powershell
+    Install-Package "Microsoft.Graph"
+    Install-Package "Microsoft.Identity.Client" -pre
+    ```
 
-- **clientId**: The Application Id of the registered application with AAD
-- **clientSecret**: The secret key of the registered application with AAD
-- **tenantId**: The tenant Id of the AAD directory.  You can retrieve this value from https://portal.azure.com under the `?` icon, show diagnostics.
+1. Edit the **local.settings.json** file and add the following items to use while debugging locally.
+    - `clientId`: The app ID of the registered application with AAD
+    - `clientSecret`: The secret key of the registered application with AAD
+    - `tenantId`: The tenant ID of the AAD directory.  You can retrieve this value from your [Microsoft Azure portal](https://portal.azure.com). Select **?** and then select **show diagnostics**.
+    - `authorityFormat`: https://login.microsoftonline.com/{0}/v2.0
+    - `replyUri`: https://localhost:44316/
 
-![](Images/16.png)
+    >Note: **AzureWebJobsStorage** and **AzureWebJobsDashboard** will already be set with `UserDevelopmentStorage=true` because you chose **Storage Emulator** as the Storage Account during project creation.
 
-- **authorityFormat**: https://login.microsoftonline.com/{0}/v2.0
-- **replyUri**: https://localhost:44316/
+    ![Screenshot of Azure portal with show diagnostics highlighted.](Images/16.png)
 
-Refer to the following to verify settings:
+1. Refer to the following to verify settings:
 
-````json
-{
-  "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
-    "clientId": "b6299aea-4b9e-499f-a590-e2e29c6990e5",
-    "clientSecret": "gb9p9w9Z9A9V9#9v94929!$",
-    "tenantId": "9a9f949f-79b9-469b-b995-b49fe9ad967d",
-    "authorityFormat": "https://login.microsoftonline.com/{0}/v2.0",
-    "replyUri": "https://localhost:44316"
-  }
-}
-````
-
-**Add** a class named `MsGraphUser.cs` to the project with the following contents:
-
-````csharp
-using System.Collections.Generic;
-using Newtonsoft.Json;
-
-namespace AzureSyncFunction.Models
-{
-    public class MsGraphUser
+    ```json
     {
-        [JsonProperty(PropertyName = "@odata.type")]
-        public string odataType { get; set; }
-        [JsonProperty(PropertyName = "@odata.id")]
-        public string odataId { get; set; }
-        public List<string> businessPhones { get; set; }
-        public string displayName { get; set; }
-        public string givenName { get; set; }
-        public string jobTitle { get; set; }
-        public string mail { get; set; }
-        public string mobilePhone { get; set; }
-        public string officeLocation { get; set; }
-        public string preferredLanguage { get; set; }
-        public string surname { get; set; }
-        public string userPrincipalName { get; set; }
-        public string id { get; set; }
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
+        "clientId": "b6299aea-4b9e-499f-a590-e2e29c6990e5",
+        "clientSecret": "gb9p9w9Z9A9V9#9v94929!$",
+        "tenantId": "9a9f949f-79b9-469b-b995-b49fe9ad967d",
+        "authorityFormat": "https://login.microsoftonline.com/{0}/v2.0",
+        "replyUri": "https://localhost:44316"
     }
-
-    public class MsGraphUserListResponse
-    {
-        [JsonProperty(PropertyName = "@odata.context")]
-        public string context { get; set; }
-        public List<MsGraphUser> value { get; set; }
     }
-}
-````
+    ```
 
-**Replace** the contents of the function class with the following:
+1. Add a class named `MsGraphUser.cs` to the project with the following contents:
 
-````csharp
-using System;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Identity.Client;
-using System.Net;
-using AzureSyncFunction.Models;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Newtonsoft.Json;
-using System.Configuration;
+    ```csharp
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
 
-namespace AzureSyncFunction
-{
-    public static class UserSync
+    namespace AzureSyncFunction
     {
-        private static string tenantId = ConfigurationManager.AppSettings["tenantId"];
-        private static string authorityFormat = ConfigurationManager.AppSettings["authorityFormat"];
-
-        private static string msGraphScope = "https://graph.microsoft.com/.default";
-        private static string msGraphQuery = "https://graph.microsoft.com/v1.0/users";
-
-        private static ConcurrentDictionary<string, List<MsGraphUser>> usersByTenant = new ConcurrentDictionary<string, List<MsGraphUser>>();
-
-        [FunctionName("UserSync")]
-        public static void Run([TimerTrigger("*/30 * * * * *")]TimerInfo myTimer, TraceWriter log)
+        public class MsGraphUser
         {
-            log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
-            try
+            [JsonProperty(PropertyName = "@odata.type")]
+            public string odataType { get; set; }
+            [JsonProperty(PropertyName = "@odata.id")]
+            public string odataId { get; set; }
+            public List<string> businessPhones { get; set; }
+            public string displayName { get; set; }
+            public string givenName { get; set; }
+            public string jobTitle { get; set; }
+            public string mail { get; set; }
+            public string mobilePhone { get; set; }
+            public string officeLocation { get; set; }
+            public string preferredLanguage { get; set; }
+            public string surname { get; set; }
+            public string userPrincipalName { get; set; }
+            public string id { get; set; }
+        }
+
+        public class MsGraphUserListResponse
+        {
+            [JsonProperty(PropertyName = "@odata.context")]
+            public string context { get; set; }
+            public List<MsGraphUser> value { get; set; }
+        }
+    }
+    ```
+
+1. Replace the contents of the function class with the following:
+
+    ```csharp
+    using System;
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Host;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using Microsoft.Identity.Client;
+    using Newtonsoft.Json;
+    using Microsoft.Extensions.Configuration;
+
+    namespace AzureSyncFunction
+    {
+        public static class UserSync
+        {
+            private static string msGraphScope = "https://graph.microsoft.com/.default";
+            private static string msGraphQuery = "https://graph.microsoft.com/v1.0/users";
+
+            private static ConcurrentDictionary<string, List<MsGraphUser>> usersByTenant = new ConcurrentDictionary<string, List<MsGraphUser>>();
+
+            [FunctionName("UserSync")]
+            public static void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, TraceWriter log, ExecutionContext context)
             {
-                ConfidentialClientApplication daemonClient = new ConfidentialClientApplication(ConfigurationManager.AppSettings["clientId"],
-                    String.Format(authorityFormat, tenantId),
-                    ConfigurationManager.AppSettings["replyUri"],
-                    new ClientCredential(ConfigurationManager.AppSettings["clientSecret"]),
-                    null, new TokenCache());
+                log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
 
-                AuthenticationResult authResult = daemonClient.AcquireTokenForClientAsync(new string[] { msGraphScope }).GetAwaiter().GetResult();
-
-                // Query for list of users in the tenant
-                HttpClient client = new HttpClient();
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, msGraphQuery);
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
-                HttpResponseMessage response = client.SendAsync(request).GetAwaiter().GetResult();
-
-                // If the token we used was insufficient to make the query, drop the token from the cache.
-                // The Users page of the website will show a message to the user instructing them to grant
-                // permissions to the app (see User/Index.cshtml).
-                if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                try
                 {
-                    // BUG: Here, we should clear MSAL's app token cache to ensure that on a subsequent call
-                    // to SyncController, MSAL does not return the same access token that resulted in this 403.
-                    // By clearing the cache, MSAL will be forced to retrieve a new access token from AAD, 
-                    // which will contain the most up-to-date set of permissions granted to the app. Since MSAL
-                    // currently does not provide a way to clear the app token cache, we have commented this line
-                    // out. Thankfully, since this app uses the default in-memory app token cache, the app still
-                    // works correctly, since the in-memory cache is not persistent across calls to SyncController
-                    // anyway. If you build a persistent app token cache for MSAL, you should make sure to clear 
-                    // it at this point in the code.
-                    //
-                    //daemonClient.AppTokenCache.Clear(Startup.clientId);
-                    log.Error("Unable to issue query: Received " + response.StatusCode + " in Run method");
-                }
+                    var config = new ConfigurationBuilder()
+                        .SetBasePath(context.FunctionAppDirectory)
+                        .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                        .AddEnvironmentVariables()
+                        .Build();
 
-                if (!response.IsSuccessStatusCode)
+                    string clientId = config["clientId"]; 
+                    string clientSecret = config["clientSecret"]; 
+                    string tenantId = config["tenantId"]; 
+                    string authorityFormat = config["authorityFormat"]; 
+                    string replyUri = config["authorityFormat"]; 
+
+                    ConfidentialClientApplication daemonClient = new ConfidentialClientApplication(clientId,
+                        String.Format(authorityFormat, tenantId),
+                        replyUri,
+                        new ClientCredential(clientSecret),
+                        null, new TokenCache());
+
+                    AuthenticationResult authResult = daemonClient.AcquireTokenForClientAsync(new[] { msGraphScope }).GetAwaiter().GetResult();
+
+                    // Query for list of users in the tenant
+                    HttpClient client = new HttpClient();
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, msGraphQuery);
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+                    HttpResponseMessage response = client.SendAsync(request).GetAwaiter().GetResult();
+
+                    // If the token we used was insufficient to make the query, drop the token from the cache.
+                    // The Users page of the website will show a message to the user instructing them to grant
+                    // permissions to the app (see User/Index.cshtml).
+                    if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        // BUG: Here, we should clear MSAL's app token cache to ensure that on a subsequent call
+                        // to SyncController, MSAL does not return the same access token that resulted in this 403.
+                        // By clearing the cache, MSAL will be forced to retrieve a new access token from AAD,
+                        // which will contain the most up-to-date set of permissions granted to the app. Since MSAL
+                        // currently does not provide a way to clear the app token cache, we have commented this line
+                        // out. Thankfully, since this app uses the default in-memory app token cache, the app still
+                        // works correctly, since the in-memory cache is not persistent across calls to SyncController
+                        // anyway. If you build a persistent app token cache for MSAL, you should make sure to clear
+                        // it at this point in the code.
+                        //
+                        //daemonClient.AppTokenCache.Clear(Startup.clientId);
+                        log.Error("Unable to issue query: Received " + response.StatusCode + " in Run method");
+                    }
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        log.Error("Unable to issue query: Received " + response.StatusCode + " in Run method");
+                    }
+
+                    // Record users in the data store (note that this only records the first page of users)
+                    string json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    MsGraphUserListResponse users = JsonConvert.DeserializeObject<MsGraphUserListResponse>(json);
+                    usersByTenant[tenantId] = users.value;
+                    log.Info("Successfully synchronized " + users.value.Count + " users!");
+
+                }
+                catch (Exception oops)
                 {
-                    log.Error("Unable to issue query: Received " + response.StatusCode + " in Run method");
+                    log.Error(oops.Message, oops, "AzureSyncFunction.UserSync.Run");
                 }
-
-                // Record users in the data store (note that this only records the first page of users)
-                string json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                MsGraphUserListResponse users = JsonConvert.DeserializeObject<MsGraphUserListResponse>(json);
-                usersByTenant[tenantId] = users.value;
-                log.Info("Successfully synchronized " + users.value.Count + " users!");
-
-            }
-            catch (Exception oops)
-            {
-                log.Error(oops.Message, oops, "AzureSyncFunction.UserSync.Run");
             }
         }
     }
-}
-````
+
+
+    ```
 
 ### Debug the Azure Function project locally
 
-Now that the project is coded and settings are configured, run the Azure Function project locally. A command window appears and provides output from the running function. **Note**: you will need the Microsoft Azure Storage Emulator running (you can find it in your start menu), for more information see [Configuring and Using the Storage Emulator with Visual Studio](https://docs.microsoft.com/en-us/azure/vs-azure-tools-storage-emulator-using#initializing-and-running-the-storage-emulator)
+1. Now that the project is coded and settings are configured, run the Azure Function project locally. A command window appears and provides output from the running function.
 
-![](Images/16b.png)
+    >**Note**: you will need the Microsoft Azure Storage Emulator running. You can find it in your start menu. For more information see [Configuring and using the storage emulator with Visual Studio](https://docs.microsoft.com/en-us/azure/vs-azure-tools-storage-emulator-using#initializing-and-running-the-storage-emulator)
 
-As the timer fires once every 30 seconds, the display will show the successful execution of the Azure Function.
+    ![Screenshot of the Azure Function emulator output](Images/16b.png)
 
-![](Images/16c.png)
+1. When the timer fires once every 30 seconds, the display will show the successful execution of the Azure Function.
+
+    ![Screenshot of the Azure Function emulator output](Images/16c.png)
 
 ### Deploy the Azure Function project to Microsoft Azure
 
-Right-click the Azure Function project and choose **Publish**. Choose the **Azure Function App**, select **Create New**, and click **OK**. 
+1. Right-click the Azure Function project and choose **Publish**.
 
-![](Images/17.png)
+1. Select the **Azure Function App**. Select **Create New** and select **OK**.
 
-Choose your Azure subscription, a resource group, an app service plan, and a storage account and then click **Create**. The function is published to your Azure subscription.
+    ![Screenshot of publish target menu with Azure Function App selected.](Images/17.png)
 
-![](Images/17a.png)
+1. Choose your **Azure subscription**, a **resource group**, an **app service plan**, and a **storage account** and then select **Create**. The function is published to your Azure subscription.
 
-The local configuration settings are not published to the Azure Function. Open the Azure Function and choose **Application Settings**. Provide the same key and value pairs that you used within your local debug session.
+    ![Screenshot of menu in Azure.](Images/17a.png)
 
-![](Images/17b.png)
+1. The local configuration settings are not published to the Azure Function. Open the **Azure Function** and choose **Application Settings**. Provide the same key and value pairs that you used within your local debug session.
 
-Finally, click on the **Monitor** node to monitor the Azure Function as it runs every 30 seconds. In the **Logs** window, verify that you are successfully synchronizing users.
+    ![Screenshot of Azure Function settings with ClientSecret highlighted.](Images/17b.png)
 
-![](Images/18.png)
+1. Select the **Monitor** node to monitor the Azure Function as it runs every 30 seconds. In the **Logs** window, verify that you are successfully synchronizing users.
 
-<a name="xamarinapp"></a>
+    ![Screenshot of the monitoring log with user log highlighted.](Images/18.png)
 
-## 4. Create a mobile app with Xamarin using Microsoft Graph
+    >Note: If your Azure Function will not execute you may need to modify the **Application Setting** FUNCTIONS_EXTENSION_VERSION to beta  
 
-In this lab, you will through building an application using Xamarin.Forms. You must be running Windows 10 for this lab to work. This demo only walks through creating a UWP
-application. For more information on creating Android and iOS projects using Xamarin.Forms that target Microsoft Graph API, see the [Xamarin CSharp Connect Sample on GitHub](https://github.com/microsoftgraph/xamarin-csharp-connect-sample).
+## Exercise 4: Create a mobile app with Xamarin using Microsoft Graph
+
+In this exercise, you will work through building an application using **Xamarin.Forms**. You must be running Windows 10 for this lab to work. This demo only walks through creating a UWP
+application. For more information on creating Android and iOS projects using Xamarin.Forms that target Microsoft Graph API, see the [Xamarin CSharp connect sample on GitHub](https://github.com/microsoftgraph/xamarin-csharp-connect-sample).
 
 ### Register the application
 
-Visit the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application. 
+1. Visit the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
 
-- Click the **Add an app** button.
-    - Enter a name for the application.
-    - Click **Create**
-- Copy the **Application Id** that is generated.
-- Under **Platforms**, click **Add Platform**.
-    - Add a **Native Application** platform. Copy the generated custom redirect URL.
-- Under **Microsoft Graph Permissions** add the **User.Read** delegated permission.
-- Click **Save** to ensure changes are committed.
+1. Select the **Add an app** button and enter a name for the application. Select **Create**.
+
+1. Copy the **Application Id** that is generated.
+
+1. In the **Platforms** menu, select **Add Platform**. Add a **Native Application** platform. Copy the generated custom redirect URL.
+
+1. Under **Microsoft Graph Permissions**, add the **User.Read** delegated permission. Select **Save** to ensure changes are committed.
 
 ### Create the application in Visual Studio
 
-Open Visual Studio 2017. Create a new **Cross-Platform / Mobile App (Xamarin.Forms)** project. When prompted for the template type, choose **Blank App**.  Unselect iOS and Android from Platform and choose **.NET Standard** as the code sharing strategy.
+1. Open **Visual Studio 2017**. Create a new **Cross-Platform/Mobile App (Xamarin.Forms)** project. 
 
-![](Images/20.png)
+1. When prompted for the template type, choose **Blank app**.  Unselect iOS and Android from platform and choose **.NET Standard** as the code sharing strategy.
 
-Two projects were created (because we unchecked iOS and Android):
+    ![Screenshot of CrossPlatform app menu.](Images/20.png)
 
-- a .NET standard class library project where most logic will reside ([App])
-- a Universal Windows Platform project containing Windows display logic ([App.UWP])
+1. Two projects were created because you unchecked iOS and Android:
+    - `[App]`: a .NET standard class library project where most logic will reside
+    - `[App.UWP]`: a Universal Windows Platform project containing Windows display logic
 
-This lab only walks through creating a UWP application using Xamarin.Forms. For more information on creating Android and iOS projects using Xamarin.Forms that target Microsoft Graph API, 
-see the [Xamarin CSharp Connect Sample on GitHub](https://github.com/microsoftgraph/xamarin-csharp-connect-sample). 
+    > Note: This lab only walks through creating a UWP application using Xamarin.Forms. For more information on creating Android and iOS projects using Xamarin.Forms that target Microsoft Graph API, see the [Xamarin CSharp connect sample on GitHub](https://github.com/microsoftgraph/xamarin-csharp-connect-sample).
 
-### Add NuGet Packages to projects
+### Add NuGet packages to projects
 
-In Visual Studio, navigate to Tools / NuGet Package Manager / Package Manager Console. Install the **Microsoft.Identity.Client** package to all projects, and install the **Newtonsoft.Json** package to the portable class library project. Replace App1 with the name you gave your solution
+1. In **Visual Studio**, go to **Tools > NuGet Package Manager > Package Manager Console**. Install the `Microsoft.Identity.Client` package to all projects, and install the `Newtonsoft.Json` package to the portable class library project. Replace `App1` with the name you gave your solution.
 
-````powershell
-Install-Package Microsoft.Identity.Client -ProjectName App1 -pre
-Install-Package Newtonsoft.Json -ProjectName App1
-Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -pre
-````
+    ```powershell
+    Install-Package Microsoft.Identity.Client -ProjectName App1 -pre
+    Install-Package Newtonsoft.Json -ProjectName App1
+    Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -pre
+    ```
 
 ### Edit the .NET standard class library project
 
-Edit the `app.xaml.cs` file in the portable class library project. Replace the `using`'s section with the following:
+1. Edit the **app.xaml.cs** file in the portable class library project. Replace the `using` section with the following:
 
-````csharp
-using Microsoft.Identity.Client;
-````
+    ```csharp
+    using Microsoft.Identity.Client;
+    ```
 
-Replace the body of the class with the following:
+1. Replace the body of the class with the following:
 
-````csharp
-public partial class App : Application
-{
-    public static PublicClientApplication PCA = null;
-    public static string ClientID = "YOUR_CLIENT_ID";
-    public static string[] Scopes = { "User.Read" };
-    public static string Username = string.Empty;
-
-    public static UIParent UiParent = null;
-    public App()
+    ```csharp
+    public partial class App : Application
     {
-        InitializeComponent();
-        // default redirectURI; each platform specific project will have to override it with its own
-        PCA = new PublicClientApplication(ClientID);
-        MainPage = new XamarinApp.MainPage();
-    }
+        public static PublicClientApplication PCA = null;
+        public static string ClientID = "YOUR_CLIENT_ID";
+        public static string[] Scopes = { "User.Read" };
+        public static string Username = string.Empty;
 
-    protected override void OnStart()
-    {
-        // Handle when your app starts
-    }
-
-    protected override void OnSleep()
-    {
-        // Handle when your app sleeps
-    }
-
-    protected override void OnResume()
-    {
-        // Handle when your app resumes
-    }
-}
-````
-
-Replace the **YOUR_CLIENT_ID** placeholder with the Application ID that was generated when the application was registered.
-
-Edit the `MainPage.xaml` file. Replace the generated label control with the following:
-
-````xml
-<ContentPage.Content>
-    <StackLayout>
-        <Label Text="MSAL Xamarin Forms Sample" VerticalOptions="Start" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
-        <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
-        <StackLayout x:Name="slUser" IsVisible="False" Padding="5,10">
-            <StackLayout Orientation="Horizontal">
-                <Label Text="DisplayName " FontAttributes="Bold" />
-                <Label x:Name="lblDisplayName" />
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="GivenName " FontAttributes="Bold" />
-                <Label x:Name="lblGivenName" />
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Surname " FontAttributes="Bold" />
-                <Label x:Name="lblSurname" />
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Id " FontAttributes="Bold" />
-                <Label x:Name="lblId" />
-            </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Text="UserPrincipalName " FontAttributes="Bold" />
-                <Label x:Name="lblUserPrincipalName" />
-            </StackLayout>
-        </StackLayout>
-        <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
-        <Button x:Name="btnSignInSignOut" Text="Sign in" Clicked="OnSignInSignOut" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
-    </StackLayout>
-</ContentPage.Content>
-````
-
-Edit the `MainPage.xaml.cs` file. Replace the `using` statements with the following:
-
-````csharp
-using Microsoft.Identity.Client;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
-using System.Net.Http;
-using Xamarin.Forms;
-````
-
-**Add** the following methods to the `MainPage.xaml.cs` class.
-
-````csharp
-protected override async void OnAppearing()
-{
-    // let's see if we have a user already
-    try
-    {
-        AuthenticationResult ar =
-            await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.FirstOrDefault());
-        RefreshUserData(ar.AccessToken);
-        btnSignInSignOut.Text = "Sign out";
-    }
-    catch
-    {
-        // doesn't matter, we go in interactive more
-        btnSignInSignOut.Text = "Sign in";
-    }
-}
-async void OnSignInSignOut(object sender, EventArgs e)
-{
-    try
-    {
-        if (btnSignInSignOut.Text == "Sign in")
+        public static UIParent UiParent = null;
+        public App()
         {
-            AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
+            InitializeComponent();
+            // default redirectURI; each platform specific project will have to override it with its own
+            PCA = new PublicClientApplication(ClientID);
+            MainPage = new XamarinApp.MainPage();
+        }
+
+        protected override void OnStart()
+        {
+            // Handle when your app starts
+        }
+
+        protected override void OnSleep()
+        {
+            // Handle when your app sleeps
+        }
+
+        protected override void OnResume()
+        {
+            // Handle when your app resumes
+        }
+    }
+    ```
+
+1. Replace the `YOUR_CLIENT_ID` placeholder with the App ID that was generated when the application was registered.
+
+1. Edit the **MainPage.xaml** file. Replace the generated label control with the following:
+
+    ```xml
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="MSAL Xamarin Forms Sample" VerticalOptions="Start" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
+            <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+            <StackLayout x:Name="slUser" IsVisible="False" Padding="5,10">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="DisplayName " FontAttributes="Bold" />
+                    <Label x:Name="lblDisplayName" />
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="GivenName " FontAttributes="Bold" />
+                    <Label x:Name="lblGivenName" />
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Surname " FontAttributes="Bold" />
+                    <Label x:Name="lblSurname" />
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Id " FontAttributes="Bold" />
+                    <Label x:Name="lblId" />
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="UserPrincipalName " FontAttributes="Bold" />
+                    <Label x:Name="lblUserPrincipalName" />
+                </StackLayout>
+            </StackLayout>
+            <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+            <Button x:Name="btnSignInSignOut" Text="Sign in" ed="OnSignInSignOut" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
+        </StackLayout>
+    </ContentPage.Content>
+    ```
+
+1. Edit the **MainPage.xaml.cs** file. Replace the `using` statements with the following:
+
+    ```csharp
+    using Microsoft.Identity.Client;
+    using Newtonsoft.Json.Linq;
+    using System;
+    using System.Linq;
+    using System.Net.Http;
+    using Xamarin.Forms;
+    ```
+
+1. Add the following methods to the `MainPage.xaml.cs` class:
+
+    ```csharp
+    protected override async void OnAppearing()
+    {
+        // let's see if we have a user already
+        try
+        {
+            AuthenticationResult ar =
+                await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.FirstOrDefault());
             RefreshUserData(ar.AccessToken);
+            btnSignInSignOut.Text = "Sign out";
+        }
+        catch
+        {
+            // doesn't matter, we go in interactive more
+            btnSignInSignOut.Text = "Sign in";
+        }
+    }
+    async void OnSignInSignOut(object sender, EventArgs e)
+    {
+        try
+        {
+            if (btnSignInSignOut.Text == "Sign in")
+            {
+                AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, App.UiParent);
+                RefreshUserData(ar.AccessToken);
+                btnSignInSignOut.Text = "Sign out";
+            }
+            else
+            {
+                foreach (var user in App.PCA.Users)
+                {
+                    App.PCA.Remove(user);
+                }
+                slUser.IsVisible = false;
+                btnSignInSignOut.Text = "Sign in";
+            }
+        }
+        catch (Exception ee)
+        {
+            await DisplayAlert("Something went wrong signing in/out", ee.Message, "Dismiss");
+        }
+    }
+
+    public async void RefreshUserData(string token)
+    {
+        //get data from API
+        HttpClient client = new HttpClient();
+        HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me");
+        message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", token);
+        HttpResponseMessage response = await client.SendAsync(message);
+        string responseString = await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            JObject user = JObject.Parse(responseString);
+
+            slUser.IsVisible = true;
+            lblDisplayName.Text = user["displayName"].ToString();
+            lblGivenName.Text = user["givenName"].ToString();
+            lblId.Text = user["id"].ToString();
+            lblSurname.Text = user["surname"].ToString();
+            lblUserPrincipalName.Text = user["userPrincipalName"].ToString();
+
+            // just in case
             btnSignInSignOut.Text = "Sign out";
         }
         else
         {
-            foreach (var user in App.PCA.Users)
-            {
-                App.PCA.Remove(user);
-            }
-            slUser.IsVisible = false;
-            btnSignInSignOut.Text = "Sign in";
+            await DisplayAlert("Something went wrong with the API call", responseString, "Dismiss");
         }
     }
-    catch (Exception ee)
-    {
-        await DisplayAlert("Something went wrong signing in/out", ee.Message, "Dismiss");
-    }
-}
-
-public async void RefreshUserData(string token)
-{
-    //get data from API
-    HttpClient client = new HttpClient();
-    HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me");
-    message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", token);
-    HttpResponseMessage response = await client.SendAsync(message);
-    string responseString = await response.Content.ReadAsStringAsync();
-    if (response.IsSuccessStatusCode)
-    {
-        JObject user = JObject.Parse(responseString);
-
-        slUser.IsVisible = true;
-        lblDisplayName.Text = user["displayName"].ToString();
-        lblGivenName.Text = user["givenName"].ToString();
-        lblId.Text = user["id"].ToString();
-        lblSurname.Text = user["surname"].ToString();
-        lblUserPrincipalName.Text = user["userPrincipalName"].ToString();
-
-        // just in case
-        btnSignInSignOut.Text = "Sign out";
-    }
-    else
-    {
-        await DisplayAlert("Something went wrong with the API call", responseString, "Dismiss");
-    }
-}
-````
+    ```
 
 ### Debug the project
 
-To verify the application's behavior, start debugging. In the debug menu, change the platform to x64 (or x86 if your machine isn't 64-bit) and change the target to **Local Machine** and click the play button to start debugging.
+1. To verify the application's behavior, start debugging. In the debug menu, change the platform to x64 (or x86 if your machine isn't 64-bit) and change the target to **Local Machine** and select the **play** button to start debugging.
 
-![](Images/21.png)
+    ![Screenshot of Visual Studio with Build menu highlighted.](Images/21.png)
 
-The app loads and a **Sign In** button is displayed at the bottom, click it.
+1. When the app loads, select the **Sign In** button at the bottom of the screen. After signing in, the current user's profile information is displayed.
 
-![](Images/22.png)
+    ![Screenshot of sign in dialog box.](Images/22.png)
 
-Upon successful sign in, the current user's profile information is displayed. Note that you can sign in using an organizational account such as a work or school account, or you can sign in with a Microsoft Account such as a Live.com, Outlook.com, or Hotmail.com personal address.
+>Note: You can sign in using an organizational account such as a work or school account, or you can sign in with a Microsoft account such as a Live.com, Outlook.com, or Hotmail.com personal email address.

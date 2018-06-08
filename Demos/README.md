@@ -1,13 +1,13 @@
-# Microsoft Graph: Building Microsoft Graph Applications - 200 Level
+# Building Microsoft Graph Applications
 
 This folder contains demos for the Building Microsoft Graph Applications module.
 
 ## Demos
 
 - [Console application](./01-console-application)
-- [JavaScript application](./02-angular-connect-rest)
-- [Azure Function](./03-dotnet-daemon)
-- [Xamarin mobile app](./04-xamarin-application)
+- [JavaScript application](./02-javascript-application)
+- [Azure Function](./03-azure-function)
+- [Xamarin mobile app](./04-xamarin-app)
 
 ## Running demonstrations
 
