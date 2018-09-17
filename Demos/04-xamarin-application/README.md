@@ -11,7 +11,7 @@ application. For more information on creating Android and iOS projects using Xam
 
 1. Copy the **Application Id** that is generated.
 
-1. In the **Platforms** menu, select **Add Platform**. Add a **Native Application** platform. Copy the generated custom redirect URL.
+1. In the **Platforms** menu, select **Add Platform**. Add a **Native Application** platform.
 
 1. Under **Microsoft Graph Permissions**, add the **User.Read** delegated permission. Select **Save** to ensure changes are committed.
 
@@ -34,9 +34,9 @@ application. For more information on creating Android and iOS projects using Xam
 1. In **Visual Studio**, go to **Tools > NuGet Package Manager > Package Manager Console**. Install the `Microsoft.Identity.Client` package to all projects, and install the `Newtonsoft.Json` package to the portable class library project. Replace `App1` with the name you gave your solution.
 
     ```powershell
-    Install-Package Microsoft.Identity.Client -ProjectName App1 -pre
+    Install-Package Microsoft.Identity.Client -ProjectName App1 -Version 1.1.4-preview0002
     Install-Package Newtonsoft.Json -ProjectName App1
-    Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -pre
+    Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -Version 1.1.4-preview0002
     ```
 
 ## Edit the .NET standard class library project

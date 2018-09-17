@@ -36,7 +36,7 @@ In this demo you will create a .NET console application from scratch using .NET 
 
     ```powershell
     Install-Package "Microsoft.Graph"
-    Install-Package "Microsoft.Identity.Client" -pre
+    Install-Package "Microsoft.Identity.Client" -Version 1.1.4-preview0002
     Install-Package "System.Configuration.ConfigurationManager"
     ```
 
@@ -74,7 +74,7 @@ In this demo you will create a .NET console application from scratch using .NET 
     {
         // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
         static string clientId = ConfigurationManager.AppSettings["clientId"].ToString();
-        public static string[] Scopes = { "User.Read" , "User.ReadBasic.All"};
+        public static string[] Scopes = { "User.Read" , "People.Read"};
 
         public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
 

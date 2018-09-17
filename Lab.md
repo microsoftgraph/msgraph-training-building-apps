@@ -4,10 +4,10 @@ In this lab, you will walk through building applications that connect with the M
 
 ## In this lab
 
-1. [Exercise 1: Build a .NET console application using Microsoft Graph](#exercise-1-build-a-net-console-application-using-microsoft-graph)
-1. [Exercise 2: Build a JavaScript application using Microsoft Graph](#exercise-2-build-a-javascript-application-using-microsoft-graph)
-1. [Exercise 3: Build an Azure Function using Microsoft Graph](#exercise-3-build-an-azure-function-using-microsoft-graph)
-1. [Exercise 4: Build a mobile application with Xamarin using Microsoft Graph](#exercise-4-create-a-mobile-app-with-xamarin-using-microsoft-graph)
+1. [Build a .NET console application using Microsoft Graph](#Exercise_1:_Build_a_.NET_console_application_using_Microsoft_Graph)
+1. [Build a JavaScript application using Microsoft Graph](#Exercise_2:_Build_a_JavaScript_application_using_Microsoft_Graph)
+1. [Build an Azure Function using Microsoft Graph](#Exercise_3:_Build_an_Azure_Function_using_Microsoft_Graph)
+1. [Build a mobile application with Xamarin using Microsoft Graph](#Exercise_4:_Create_a_mobile_app_with_Xamarin_using_Microsoft_Graph)
 
 ## Prerequisites
 
@@ -55,7 +55,7 @@ In this exercise you will create a .NET console application from scratch using .
 
     ```powershell
     Install-Package "Microsoft.Graph"
-    Install-Package "Microsoft.Identity.Client" -Version 1.1.4-preview0002
+    Install-Package "Microsoft.Identity.Client" -pre
     Install-Package "System.Configuration.ConfigurationManager"
     ```
 
@@ -93,7 +93,7 @@ In this exercise you will create a .NET console application from scratch using .
     {
         // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
         static string clientId = ConfigurationManager.AppSettings["clientId"].ToString();
-        public static string[] Scopes = { "User.Read" , "People.Read"};
+        public static string[] Scopes = { "User.Read" , "User.ReadBasic.All"};
 
         public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
 
@@ -409,7 +409,6 @@ This solution will require an organizational account. An admin is required to pr
 
 1. On the next page, select **Sign In**. The app will ask you for permission to sign you in & read your user profile. This allows the application to ensure that you are a business user. The application will then try to sync a list of users from your Azure AD tenant via the Microsoft Graph. If it is unable to do so, it asks you (the tenant administrator) to connect your tenant to the application.
 
-
 1. The application will ask for permission to read the list of users in your tenant. When you grant the permission, the application is able to query for users at any point. You can verify this by selecting the **Sync Users** button on the users page to refresh the list of users. Try adding or removing a user and re-syncing the list but note that it only syncs the first page of users.
 
     >Note: There is approximately a 20 minute data replication delay between the time when an application is granted admin consent and when the data can successfully synchronize. For more information, read this [issue](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2/issues/1).
@@ -436,7 +435,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 
     ```powershell
     Install-Package "Microsoft.Graph"
-    Install-Package "Microsoft.Identity.Client" -Version 1.1.4-preview0002
+    Install-Package "Microsoft.Identity.Client" -pre
     ```
 
 1. Edit the **local.settings.json** file and add the following items to use while debugging locally.
@@ -463,7 +462,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
         "tenantId": "9a9f949f-79b9-469b-b995-b49fe9ad967d",
         "authorityFormat": "https://login.microsoftonline.com/{0}/v2.0",
         "replyUri": "https://localhost:44316",
-        "FUNCTIONS_WORKER_RUNTIME":  "dotnet" 
+        "FUNCTIONS_WORKER_RUNTIME":  "dotnet"
     }
     }
     ```
@@ -616,7 +615,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 
 ### Deploy the Azure Function project to Microsoft Azure
 
-1. Right-click the Azure Function project and choose **Publish** and then choose **Start**.
+1. Right-click the Azure Function project and choose **Publish**.
 
 1. Select the **Azure Function App**. Select **Create New** and select **OK**.
 
@@ -649,7 +648,7 @@ application. For more information on creating Android and iOS projects using Xam
 
 1. Copy the **Application Id** that is generated.
 
-1. In the **Platforms** menu, select **Add Platform**. Add a **Native Application** platform.
+1. In the **Platforms** menu, select **Add Platform**. Add a **Native Application** platform. Copy the generated custom redirect URL.
 
 1. Under **Microsoft Graph Permissions**, add the **User.Read** delegated permission. Select **Save** to ensure changes are committed.
 
@@ -672,9 +671,9 @@ application. For more information on creating Android and iOS projects using Xam
 1. In **Visual Studio**, go to **Tools > NuGet Package Manager > Package Manager Console**. Install the `Microsoft.Identity.Client` package to all projects, and install the `Newtonsoft.Json` package to the portable class library project. Replace `App1` with the name you gave your solution.
 
     ```powershell
-    Install-Package Microsoft.Identity.Client -ProjectName App1 -Version 1.1.4-preview0002
+    Install-Package Microsoft.Identity.Client -ProjectName App1 -pre
     Install-Package Newtonsoft.Json -ProjectName App1
-    Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -Version 1.1.4-preview0002
+    Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -pre
     ```
 
 ### Edit the .NET standard class library project

@@ -4,7 +4,7 @@
 */
 
 var APPLICATION_CONFIG = {
-    clientID: "b6d961ee-24f0-4f35-bd78-7a3dc0c2026d",
+    clientID: "d4a58c61-8564-4307-b60c-04b43880de08",
     redirectUri: "http://localhost:8080/",
     interactionMode: "popUp",
     graphEndpoint: "https://graph.microsoft.com/v1.0/me",

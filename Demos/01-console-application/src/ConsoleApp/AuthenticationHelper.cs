@@ -13,7 +13,7 @@ namespace ConsoleApp
     {
         // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
         static string clientId = ConfigurationManager.AppSettings["clientId"].ToString();
-        public static string[] Scopes = { "User.Read", "People.Read" };
+        public static string[] Scopes = { "User.Read", "User.ReadBasic.All" };
 
         public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
 
