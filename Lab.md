@@ -461,7 +461,8 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
         "clientSecret": "gb9p9w9Z9A9V9#9v94929!$",
         "tenantId": "9a9f949f-79b9-469b-b995-b49fe9ad967d",
         "authorityFormat": "https://login.microsoftonline.com/{0}/v2.0",
-        "replyUri": "https://localhost:44316"
+        "replyUri": "https://localhost:44316",
+        "FUNCTIONS_WORKER_RUNTIME":  "dotnet"
     }
     }
     ```

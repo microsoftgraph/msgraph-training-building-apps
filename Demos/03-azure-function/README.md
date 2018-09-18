@@ -60,7 +60,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 
     ```powershell
     Install-Package "Microsoft.Graph"
-    Install-Package "Microsoft.Identity.Client" -pre
+    Install-Package "Microsoft.Identity.Client" -Version 1.1.4-preview0002
     ```
 
 1. Edit the **local.settings.json** file and add the following items to use while debugging locally.
@@ -86,7 +86,8 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
         "clientSecret": "gb9p9w9Z9A9V9#9v94929!$",
         "tenantId": "9a9f949f-79b9-469b-b995-b49fe9ad967d",
         "authorityFormat": "https://login.microsoftonline.com/{0}/v2.0",
-        "replyUri": "https://localhost:44316"
+        "replyUri": "https://localhost:44316",
+        "FUNCTIONS_WORKER_RUNTIME":  "dotnet"
     }
     }
     ```
@@ -154,7 +155,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
             public static void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, TraceWriter log, ExecutionContext context)
             {
                 log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
-                
+
                 try
                 {
                     var config = new ConfigurationBuilder()
@@ -237,7 +238,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 
 ## Deploy the Azure Function project to Microsoft Azure
 
-1. Right-click the Azure Function project and choose **Publish**.
+1. Right-click the Azure Function project and choose **Publish** and then choose **Start**.
 
 1. Select the **Azure Function App**. Select **Create New** and select **OK**.
 
