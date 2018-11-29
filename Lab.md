@@ -4,10 +4,10 @@ In this lab, you will walk through building applications that connect with the M
 
 ## In this lab
 
-1. [Build a .NET console application using Microsoft Graph](#Exercise_1:_Build_a_.NET_console_application_using_Microsoft_Graph)
-1. [Build a JavaScript application using Microsoft Graph](#Exercise_2:_Build_a_JavaScript_application_using_Microsoft_Graph)
-1. [Build an Azure Function using Microsoft Graph](#Exercise_3:_Build_an_Azure_Function_using_Microsoft_Graph)
-1. [Build a mobile application with Xamarin using Microsoft Graph](#Exercise_4:_Create_a_mobile_app_with_Xamarin_using_Microsoft_Graph)
+1. [Build a .NET console application using Microsoft Graph](#exercise-1-build-a-net-console-application-using-microsoft-graph)
+1. [Build a JavaScript application using Microsoft Graph](#exercise-2-build-a-javascript-application-using-microsoft-graph)
+1. [Build an Azure Function using Microsoft Graph](#exercise-3-build-an-azure-function-using-microsoft-graph)
+1. [Build a mobile application with Xamarin using Microsoft Graph](#exercise-4-create-a-mobile-app-with-xamarin-using-microsoft-graph)
 
 ## Prerequisites
 

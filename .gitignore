@@ -64,6 +64,7 @@ ipch/
 *.opensdf
 *.sdf
 *.cachefile
+*.cache
 
 # Visual Studio profiler
 *.psess
@@ -178,4 +179,3 @@ FakesAssemblies/
 # Excluding unwanted files
 .vscode/
 .vs/
-
