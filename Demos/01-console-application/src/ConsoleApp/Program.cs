@@ -18,7 +18,7 @@ namespace ConsoleApp
 
         /// <summary>
         /// Gets the currently logged in user's profile information
-        /// </summary>        
+        /// </summary>
         public static async Task<User> GetMeAsync()
         {
             User currentUserObject = null;
@@ -39,7 +39,7 @@ namespace ConsoleApp
         }
 
         /// <summary>
-        /// Get people near me.  Demonstrates using HttpClient to call the 
+        /// Get people near me.  Demonstrates using HttpClient to call the
         /// Graph API.
         /// </summary>
         /// <returns></returns>
@@ -71,7 +71,7 @@ namespace ConsoleApp
 
         static async Task RunAsync()
         {
-            //Display information about the current user            
+            //Display information about the current user
             Console.WriteLine("Get My Profile");
             Console.WriteLine();
 
@@ -86,9 +86,9 @@ namespace ConsoleApp
 
             var peopleJson = await GetPeopleNearMe();
             dynamic people = JObject.Parse(peopleJson);
-            if (null != people)
+            if(null != people)
             {
-                foreach (var p in people.value)
+                foreach(var p in people.value)
                 {
                     var personType = p.personType;
                     Console.WriteLine("Object:{0}\t\t\t\tClass:{1}\t\tSubclass:{2}", p.displayName, personType["class"], personType.subclass);

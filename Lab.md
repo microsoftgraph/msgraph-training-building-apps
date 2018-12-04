@@ -21,7 +21,7 @@ Open the Visual Studio installer and enable the **.NET desktop development**, **
 
 In this exercise you will create a .NET console application from scratch using .NET Framework 4.7.0, the Microsoft Graph SDK, and the Microsoft Authentication Library (MSAL).
 
-### Register the application
+### Register the console application
 
 1. Go to the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
 
@@ -47,7 +47,7 @@ In this exercise you will create a .NET console application from scratch using .
 
 ### Create the project in Visual Studio 2017
 
-1. In Visual Studio 2017, create a new **Console Application** project targeting .NET Framework 4.7.
+1. In Visual Studio 2017, create a new **Console Application** project targeting .NET Framework 4.7.2.
 
     ![Screenshot of Visual Studio 2017 new project menu.](Images/04.png)
 
@@ -55,19 +55,17 @@ In this exercise you will create a .NET console application from scratch using .
 
     ```powershell
     Install-Package "Microsoft.Graph"
-    Install-Package "Microsoft.Identity.Client" -pre
+    Install-Package "Microsoft.Identity.Client" -version 1.1.4-preview0002
     Install-Package "System.Configuration.ConfigurationManager"
     ```
 
-1. Edit the **app.config** file, and immediately before the `/configuration` element, add the following element:
+1. Edit the **app.config** file, and immediately before the `/configuration` element, add the following element replacing the value with the **Application ID** provided by the Application Registration Portal:
 
     ```xml
     <appSettings>
         <add key="clientId" value="a943d247-89a1-4a21-9a62-c9714056c456"/>
     </appSettings>
     ```
-
-    >Note: Make sure to replace the value with the **Application ID** value provided from the Application Registration Portal.
 
 ### Add AuthenticationHelper.cs
 
@@ -93,7 +91,7 @@ In this exercise you will create a .NET console application from scratch using .
     {
         // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
         static string clientId = ConfigurationManager.AppSettings["clientId"].ToString();
-        public static string[] Scopes = { "User.Read" , "User.ReadBasic.All"};
+        public static string[] Scopes = { "User.Read" , "People.Read"};
 
         public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
 
@@ -213,6 +211,7 @@ The Microsoft Graph API makes it easy to obtain the currently logged in user's p
 The Microsoft Graph API provides REST endpoints to access information and traverse relationships. One such endpoint is the `me/people` endpoint that provides information about people closely related to the current user. The following method demonstrates accessing the underlying `System.Net.HttpClient` to add an access token in the authorization header and to configure the URL for the request.
 
 ```csharp
+
     /// <summary>
     /// Get people near me.  Demonstrates using HttpClient to call the
     /// Graph API.
@@ -243,8 +242,8 @@ The Microsoft Graph API provides REST endpoints to access information and traver
             return null;
         }
     }
-```
 
+```
 
 ### Putting it all together
 
@@ -308,7 +307,7 @@ The methods we created use the **async/await** pattern.
 
 There are many sample applications that demonstrate how to use the Microsoft Graph API and the Microsoft Graph SDK available online. This lab will walk you through creating a JavaScript application leveraging the QuickStart project template to quickly get started.
 
-### Register the application
+### Register the JavaScript application
 
 1. Start by visiting the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
 
@@ -325,7 +324,7 @@ There are many sample applications that demonstrate how to use the Microsoft Gra
 You will use a QuickStart application to demonstrate working with AngularJS and the Azure AD v2 endpoint.
 
 1. Download/clone the [Microsoft Graph connect sample for AngularJS](https://github.com/microsoftgraph/angular-connect-rest-sample) and open it in a code editor of your choice.
-    >Note: This solution requires that you've installed Node.js. Please see the prerequisites in the README.md file for more information.
+    >Note: This solution requires that you've installed Node.js. Please see the prerequisites in the sample project's [README.md](https://github.com/microsoftgraph/angular-connect-rest-sample/blob/master/README.md) file for more information.
 
 1. Edit the **config.js** file in **[public/scripts](https://github.com/microsoftgraph/angular-connect-rest-sample/tree/master/public/scripts)** and replace the `clientID` placeholder with the placeholder of your application.
 
@@ -399,7 +398,7 @@ This solution will require an organizational account. An admin is required to pr
 
 1. In order to use the Azure AD v2.0 admin consent endpoint, you'll need to declare the application permissions your app will use ahead of time. While still in the registration portal, locate the **Microsoft Graph Permissions** section on your app registration. Under **Application Permissions**, add the **User.Read.All** permission. Be sure to save your app registration.
 
-1. After downloading the sample, open it using Visual Studio 2017. Open the **App_Start\Startup.Auth.cs** file, and replace the `clientId` value with the app ID you copied above. Replace the `clientSecret` value with the app secret you copied above.
+1. After downloading the sample, open it using Visual Studio 2017. Open the **Web.config** file, and replace the `ida:ClientId` value with the app ID you copied above. Replace the `ida:ClientSecret` value with the app secret you copied above.
 
 ### Run the sample
 
@@ -425,7 +424,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 
 1. Select **Timer trigger** and change the schedule to the following format:
 
-    ```
+    ```text
     */30 * * * * *
     ```
 
@@ -435,7 +434,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 
     ```powershell
     Install-Package "Microsoft.Graph"
-    Install-Package "Microsoft.Identity.Client" -pre
+    Install-Package "Microsoft.Identity.Client" -version 1.1.4-preview0002
     ```
 
 1. Edit the **local.settings.json** file and add the following items to use while debugging locally.
@@ -503,19 +502,18 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
     }
     ```
 
-1. Replace the contents of the function class with the following:
+1. Rename `Function1.cs` to `UserSync.cs` and replace the contents of the function class with the following:
 
     ```csharp
     using System;
     using Microsoft.Azure.WebJobs;
-    using Microsoft.Azure.WebJobs.Host;
+    using Microsoft.Extensions.Logging;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using Microsoft.Identity.Client;
     using Newtonsoft.Json;
-    using Microsoft.Extensions.Configuration;
 
     namespace AzureSyncFunction
     {
@@ -527,23 +525,17 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
             private static ConcurrentDictionary<string, List<MsGraphUser>> usersByTenant = new ConcurrentDictionary<string, List<MsGraphUser>>();
 
             [FunctionName("UserSync")]
-            public static void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, TraceWriter log, ExecutionContext context)
+            public static void Run([TimerTrigger("*/30 * * * * *")]TimerInfo myTimer, ILogger log, ExecutionContext context)
             {
-                log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
+                log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
                 try
                 {
-                    var config = new ConfigurationBuilder()
-                        .SetBasePath(context.FunctionAppDirectory)
-                        .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                        .AddEnvironmentVariables()
-                        .Build();
-
-                    string clientId = config["clientId"]; 
-                    string clientSecret = config["clientSecret"]; 
-                    string tenantId = config["tenantId"]; 
-                    string authorityFormat = config["authorityFormat"]; 
-                    string replyUri = config["authorityFormat"]; 
+                    string clientId = Environment.GetEnvironmentVariable("clientId"); 
+                    string clientSecret = Environment.GetEnvironmentVariable("clientSecret"); 
+                    string tenantId = Environment.GetEnvironmentVariable("tenantId"); 
+                    string authorityFormat = Environment.GetEnvironmentVariable("authorityFormat"); 
+                    string replyUri = Environment.GetEnvironmentVariable("authorityFormat");  
 
                     ConfidentialClientApplication daemonClient = new ConfidentialClientApplication(clientId,
                         String.Format(authorityFormat, tenantId),
@@ -575,24 +567,24 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
                         // it at this point in the code.
                         //
                         //daemonClient.AppTokenCache.Clear(Startup.clientId);
-                        log.Error("Unable to issue query: Received " + response.StatusCode + " in Run method");
+                        log.LogError("Unable to issue query: Received " + response.StatusCode + " in Run method");
                     }
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        log.Error("Unable to issue query: Received " + response.StatusCode + " in Run method");
+                        log.LogError("Unable to issue query: Received " + response.StatusCode + " in Run method");
                     }
 
                     // Record users in the data store (note that this only records the first page of users)
                     string json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     MsGraphUserListResponse users = JsonConvert.DeserializeObject<MsGraphUserListResponse>(json);
                     usersByTenant[tenantId] = users.value;
-                    log.Info("Successfully synchronized " + users.value.Count + " users!");
+                    log.LogInformation("Successfully synchronized " + users.value.Count + " users!");
 
                 }
                 catch (Exception oops)
                 {
-                    log.Error(oops.Message, oops, "AzureSyncFunction.UserSync.Run");
+                    log.LogError(oops.Message, oops, "AzureSyncFunction.UserSync.Run");
                 }
             }
         }
@@ -640,7 +632,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 In this exercise, you will work through building an application using **Xamarin.Forms**. You must be running Windows 10 for this lab to work. This demo only walks through creating a UWP
 application. For more information on creating Android and iOS projects using Xamarin.Forms that target Microsoft Graph API, see the [Xamarin CSharp connect sample on GitHub](https://github.com/microsoftgraph/xamarin-csharp-connect-sample).
 
-### Register the application
+### Register the Xamarin application
 
 1. Visit the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
 
@@ -661,8 +653,8 @@ application. For more information on creating Android and iOS projects using Xam
     ![Screenshot of CrossPlatform app menu.](Images/20.png)
 
 1. Two projects were created because you unchecked iOS and Android:
-    - `[App]`: a .NET standard class library project where most logic will reside
-    - `[App.UWP]`: a Universal Windows Platform project containing Windows display logic
+    - `[App1]`: a .NET standard class library project where most logic will reside
+    - `[App1.UWP]`: a Universal Windows Platform project containing Windows display logic
 
     > Note: This lab only walks through creating a UWP application using Xamarin.Forms. For more information on creating Android and iOS projects using Xamarin.Forms that target Microsoft Graph API, see the [Xamarin CSharp connect sample on GitHub](https://github.com/microsoftgraph/xamarin-csharp-connect-sample).
 
@@ -671,9 +663,9 @@ application. For more information on creating Android and iOS projects using Xam
 1. In **Visual Studio**, go to **Tools > NuGet Package Manager > Package Manager Console**. Install the `Microsoft.Identity.Client` package to all projects, and install the `Newtonsoft.Json` package to the portable class library project. Replace `App1` with the name you gave your solution.
 
     ```powershell
-    Install-Package Microsoft.Identity.Client -ProjectName App1 -pre
+    Install-Package Microsoft.Identity.Client -ProjectName App1 -version 1.1.4-preview0002
     Install-Package Newtonsoft.Json -ProjectName App1
-    Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -pre
+    Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -version 1.1.4-preview0002
     ```
 
 ### Edit the .NET standard class library project
@@ -681,6 +673,8 @@ application. For more information on creating Android and iOS projects using Xam
 1. Edit the **app.xaml.cs** file in the portable class library project. Replace the `using` section with the following:
 
     ```csharp
+    using Xamarin.Forms;
+    using Xamarin.Forms.Xaml;
     using Microsoft.Identity.Client;
     ```
 
@@ -722,50 +716,48 @@ application. For more information on creating Android and iOS projects using Xam
 
 1. Replace the `YOUR_CLIENT_ID` placeholder with the App ID that was generated when the application was registered.
 
-1. Edit the **MainPage.xaml** file. Replace the generated label control with the following:
+1. Edit the **MainPage.xaml** file. Replace the generated `StackLayout` control with the following:
 
     ```xml
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="MSAL Xamarin Forms Sample" VerticalOptions="Start" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
-            <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
-            <StackLayout x:Name="slUser" IsVisible="False" Padding="5,10">
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="DisplayName " FontAttributes="Bold" />
-                    <Label x:Name="lblDisplayName" />
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="GivenName " FontAttributes="Bold" />
-                    <Label x:Name="lblGivenName" />
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Surname " FontAttributes="Bold" />
-                    <Label x:Name="lblSurname" />
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Id " FontAttributes="Bold" />
-                    <Label x:Name="lblId" />
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="UserPrincipalName " FontAttributes="Bold" />
-                    <Label x:Name="lblUserPrincipalName" />
-                </StackLayout>
+    <StackLayout>
+        <Label Text="MSAL Xamarin Forms Sample" VerticalOptions="Start" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
+        <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+        <StackLayout x:Name="slUser" IsVisible="False" Padding="5,10">
+            <StackLayout Orientation="Horizontal">
+                <Label Text="DisplayName " FontAttributes="Bold" />
+                <Label x:Name="lblDisplayName" />
             </StackLayout>
-            <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
-            <Button x:Name="btnSignInSignOut" Text="Sign in" ed="OnSignInSignOut" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="GivenName " FontAttributes="Bold" />
+                <Label x:Name="lblGivenName" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Surname " FontAttributes="Bold" />
+                <Label x:Name="lblSurname" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Id " FontAttributes="Bold" />
+                <Label x:Name="lblId" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="UserPrincipalName " FontAttributes="Bold" />
+                <Label x:Name="lblUserPrincipalName" />
+            </StackLayout>
         </StackLayout>
-    </ContentPage.Content>
+        <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+        <Button x:Name="btnSignInSignOut" Text="Sign in" Clicked="OnSignInSignOut" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
+    </StackLayout>
     ```
 
 1. Edit the **MainPage.xaml.cs** file. Replace the `using` statements with the following:
 
     ```csharp
-    using Microsoft.Identity.Client;
-    using Newtonsoft.Json.Linq;
     using System;
     using System.Linq;
-    using System.Net.Http;
     using Xamarin.Forms;
+    using Microsoft.Identity.Client;
+    using Newtonsoft.Json.Linq;
+    using System.Net.Http;
     ```
 
 1. Add the following methods to the `MainPage.xaml.cs` class:
