@@ -1,18 +1,18 @@
-﻿using Microsoft.Identity.Client;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Linq;
-using System.Net.Http;
 using Xamarin.Forms;
+using Microsoft.Identity.Client;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
 
 namespace App1
 {
-	public partial class MainPage : ContentPage
-	{
-		public MainPage()
-		{
-			InitializeComponent();
-		}
+    public partial class MainPage : ContentPage
+    {
+        public MainPage()
+        {
+            InitializeComponent();
+        }
 
         protected override async void OnAppearing()
         {
@@ -52,7 +52,7 @@ namespace App1
             }
             catch (Exception ee)
             {
-                await DisplayAlert("Something went wrong with sign in", ee.Message, "Dismiss");
+                await DisplayAlert("Something went wrong signing in/out", ee.Message, "Dismiss");
             }
         }
 

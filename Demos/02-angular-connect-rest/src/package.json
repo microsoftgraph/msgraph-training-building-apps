@@ -2,10 +2,6 @@
   "name": "Microsoft-Graph-Connect-Angular",
   "version": "1.1.0",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/microsoftgraph/msgraph-training-building-apps"
-  },
   "main": "server.js",
   "dependencies": {
     "express": "^4.12.3",
