@@ -24,7 +24,7 @@ This solution will require an organizational account. An admin is required to pr
 
 1. In order to use the Azure AD v2.0 admin consent endpoint, you'll need to declare the application permissions your app will use ahead of time. While still in the registration portal, locate the **Microsoft Graph Permissions** section on your app registration. Under **Application Permissions**, add the **User.Read.All** permission. Be sure to save your app registration.
 
-1. After downloading the sample, open it using Visual Studio 2017. Open the **App_Start\Startup.Auth.cs** file, and replace the `clientId` value with the app ID you copied above. Replace the `clientSecret` value with the app secret you copied above.
+1. After downloading the sample, open it using Visual Studio 2017. Open the **Web.config** file, and replace the `ida:ClientId` value with the app ID you copied above. Replace the `ida:ClientSecret` value with the app secret you copied above.
 
 ## Run the sample
 
@@ -50,7 +50,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 
 1. Select **Timer trigger** and change the schedule to the following format:
 
-    ```
+    ```text
     */30 * * * * *
     ```
 
@@ -60,7 +60,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 
     ```powershell
     Install-Package "Microsoft.Graph"
-    Install-Package "Microsoft.Identity.Client" -pre
+    Install-Package "Microsoft.Identity.Client" -Version 1.1.4-preview0002
     ```
 
 1. Edit the **local.settings.json** file and add the following items to use while debugging locally.
@@ -86,7 +86,8 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
         "clientSecret": "gb9p9w9Z9A9V9#9v94929!$",
         "tenantId": "9a9f949f-79b9-469b-b995-b49fe9ad967d",
         "authorityFormat": "https://login.microsoftonline.com/{0}/v2.0",
-        "replyUri": "https://localhost:44316"
+        "replyUri": "https://localhost:44316",
+        "FUNCTIONS_WORKER_RUNTIME":  "dotnet"
     }
     }
     ```
@@ -127,19 +128,18 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
     }
     ```
 
-1. Replace the contents of the function class with the following:
+1. Rename `Function1.cs` to `UserSync.cs` and replace the contents of the function class with the following:
 
     ```csharp
     using System;
     using Microsoft.Azure.WebJobs;
-    using Microsoft.Azure.WebJobs.Host;
+    using Microsoft.Extensions.Logging;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using Microsoft.Identity.Client;
     using Newtonsoft.Json;
-    using Microsoft.Extensions.Configuration;
 
     namespace AzureSyncFunction
     {
@@ -151,23 +151,17 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
             private static ConcurrentDictionary<string, List<MsGraphUser>> usersByTenant = new ConcurrentDictionary<string, List<MsGraphUser>>();
 
             [FunctionName("UserSync")]
-            public static void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, TraceWriter log, ExecutionContext context)
+            public static void Run([TimerTrigger("*/30 * * * * *")]TimerInfo myTimer, ILogger log, ExecutionContext context)
             {
-                log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
-                
+                log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+
                 try
                 {
-                    var config = new ConfigurationBuilder()
-                        .SetBasePath(context.FunctionAppDirectory)
-                        .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                        .AddEnvironmentVariables()
-                        .Build();
-
-                    string clientId = config["clientId"]; 
-                    string clientSecret = config["clientSecret"]; 
-                    string tenantId = config["tenantId"]; 
-                    string authorityFormat = config["authorityFormat"]; 
-                    string replyUri = config["authorityFormat"]; 
+                    string clientId = Environment.GetEnvironmentVariable("clientId"); 
+                    string clientSecret = Environment.GetEnvironmentVariable("clientSecret"); 
+                    string tenantId = Environment.GetEnvironmentVariable("tenantId"); 
+                    string authorityFormat = Environment.GetEnvironmentVariable("authorityFormat"); 
+                    string replyUri = Environment.GetEnvironmentVariable("authorityFormat");  
 
                     ConfidentialClientApplication daemonClient = new ConfidentialClientApplication(clientId,
                         String.Format(authorityFormat, tenantId),
@@ -199,28 +193,29 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
                         // it at this point in the code.
                         //
                         //daemonClient.AppTokenCache.Clear(Startup.clientId);
-                        log.Error("Unable to issue query: Received " + response.StatusCode + " in Run method");
+                        log.LogError("Unable to issue query: Received " + response.StatusCode + " in Run method");
                     }
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        log.Error("Unable to issue query: Received " + response.StatusCode + " in Run method");
+                        log.LogError("Unable to issue query: Received " + response.StatusCode + " in Run method");
                     }
 
                     // Record users in the data store (note that this only records the first page of users)
                     string json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     MsGraphUserListResponse users = JsonConvert.DeserializeObject<MsGraphUserListResponse>(json);
                     usersByTenant[tenantId] = users.value;
-                    log.Info("Successfully synchronized " + users.value.Count + " users!");
+                    log.LogInformation("Successfully synchronized " + users.value.Count + " users!");
 
                 }
                 catch (Exception oops)
                 {
-                    log.Error(oops.Message, oops, "AzureSyncFunction.UserSync.Run");
+                    log.LogError(oops.Message, oops, "AzureSyncFunction.UserSync.Run");
                 }
             }
         }
     }
+
     ```
 
 ## Debug the Azure Function project locally
@@ -237,7 +232,7 @@ Visual Studio 2017 provides new tooling to simplify the creation of Azure Functi
 
 ## Deploy the Azure Function project to Microsoft Azure
 
-1. Right-click the Azure Function project and choose **Publish**.
+1. Right-click the Azure Function project and choose **Publish** and then choose **Start**.
 
 1. Select the **Azure Function App**. Select **Create New** and select **OK**.
 

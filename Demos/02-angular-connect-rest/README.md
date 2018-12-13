@@ -19,7 +19,7 @@ There are many sample applications that demonstrate how to use the Microsoft Gra
 You will use a QuickStart application to demonstrate working with AngularJS and the Azure AD v2 endpoint.
 
 1. Download/clone the [Microsoft Graph connect sample for AngularJS](https://github.com/microsoftgraph/angular-connect-rest-sample) and open it in a code editor of your choice.
-    >Note: This solution requires that you've installed Node.js. Please see the prerequisites in the README.md file for more information.
+    >Note: This solution requires that you've installed Node.js. Please see the prerequisites in the sample project's [README.md](https://github.com/microsoftgraph/angular-connect-rest-sample/blob/master/README.md) file for more information.
 
 1. Edit the **config.js** file in **[public/scripts](https://github.com/microsoftgraph/angular-connect-rest-sample/tree/master/public/scripts)** and replace the `clientID` placeholder with the placeholder of your application.
 

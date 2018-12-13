@@ -13,13 +13,13 @@ namespace ConsoleApp
     {
         // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
         static string clientId = ConfigurationManager.AppSettings["clientId"].ToString();
-        public static string[] Scopes = { "User.Read", "User.ReadBasic.All" };
+        public static string[] Scopes = { "User.Read" , "People.Read"};
 
         public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
 
         private static GraphServiceClient graphClient = null;
 
-        // Get an access token for the given context and resourceId. An attempt is first made to 
+        // Get an access token for the given context and resourceId. An attempt is first made to
         // acquire the token silently. If that fails, then we try to acquire the token by prompting the user.
         public static GraphServiceClient GetAuthenticatedClient()
         {
@@ -48,7 +48,6 @@ namespace ConsoleApp
             return graphClient;
         }
 
-
         /// <summary>
         /// Get Token for User.
         /// </summary>
@@ -63,7 +62,7 @@ namespace ConsoleApp
             }
             catch (MsalUiRequiredException ex)
             {
-                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. 
+                // A MsalUiRequiredException happened on AcquireTokenSilentAsync.
                 //This indicates you need to call AcquireTokenAsync to acquire a token
 
                 authResult = await IdentityClientApp.AcquireTokenAsync(Scopes);

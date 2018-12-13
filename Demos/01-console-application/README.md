@@ -28,7 +28,7 @@ In this demo you will create a .NET console application from scratch using .NET 
 
 ## Create the project in Visual Studio 2017
 
-1. In Visual Studio 2017, create a new **Console Application** project targeting .NET Framework 4.7.
+1. In Visual Studio 2017, create a new **Console Application** project targeting .NET Framework 4.7.2.
 
     ![Screenshot of Visual Studio 2017 new project menu.](../../Images/04.png)
 
@@ -36,11 +36,11 @@ In this demo you will create a .NET console application from scratch using .NET 
 
     ```powershell
     Install-Package "Microsoft.Graph"
-    Install-Package "Microsoft.Identity.Client" -pre
+    Install-Package "Microsoft.Identity.Client" -Version 1.1.4-preview0002
     Install-Package "System.Configuration.ConfigurationManager"
     ```
 
-1. Edit the **app.config** file, and immediately before the `/configuration` element, add the following element:
+1. Edit the **app.config** file, and immediately before the `/configuration` element, add the following element replacing the value with the **Application ID** provided by the Application Registration Portal:
 
     ```xml
     <appSettings>
@@ -74,7 +74,7 @@ In this demo you will create a .NET console application from scratch using .NET 
     {
         // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
         static string clientId = ConfigurationManager.AppSettings["clientId"].ToString();
-        public static string[] Scopes = { "User.Read" , "User.ReadBasic.All"};
+        public static string[] Scopes = { "User.Read" , "People.Read"};
 
         public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
 
@@ -166,6 +166,7 @@ The Microsoft Graph API makes it easy to obtain the currently logged in user's p
 1. To get the currently logged in user's profile information, add the following method:
 
     ```csharp
+
     /// <summary>
     /// Gets the currently logged in user's profile information
     /// </summary>
@@ -187,6 +188,7 @@ The Microsoft Graph API makes it easy to obtain the currently logged in user's p
             return null;
         }
     }
+
     ```
 
 ## Get the users related to the current user using a REST API

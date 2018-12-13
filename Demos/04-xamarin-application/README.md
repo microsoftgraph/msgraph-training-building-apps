@@ -11,7 +11,7 @@ application. For more information on creating Android and iOS projects using Xam
 
 1. Copy the **Application Id** that is generated.
 
-1. In the **Platforms** menu, select **Add Platform**. Add a **Native Application** platform. Copy the generated custom redirect URL.
+1. In the **Platforms** menu, select **Add Platform**. Add a **Native Application** platform.
 
 1. Under **Microsoft Graph Permissions**, add the **User.Read** delegated permission. Select **Save** to ensure changes are committed.
 
@@ -24,8 +24,8 @@ application. For more information on creating Android and iOS projects using Xam
     ![Screenshot of CrossPlatform app menu.](../../Images/20.png)
 
 1. Two projects were created because you unchecked iOS and Android:
-    - `[App]`: a .NET standard class library project where most logic will reside
-    - `[App.UWP]`: a Universal Windows Platform project containing Windows display logic
+    - `[App1]`: a .NET standard class library project where most logic will reside
+    - `[App1.UWP]`: a Universal Windows Platform project containing Windows display logic
 
     > Note: This lab only walks through creating a UWP application using Xamarin.Forms. For more information on creating Android and iOS projects using Xamarin.Forms that target Microsoft Graph API, see the [Xamarin CSharp connect sample on GitHub](https://github.com/microsoftgraph/xamarin-csharp-connect-sample).
 
@@ -34,9 +34,9 @@ application. For more information on creating Android and iOS projects using Xam
 1. In **Visual Studio**, go to **Tools > NuGet Package Manager > Package Manager Console**. Install the `Microsoft.Identity.Client` package to all projects, and install the `Newtonsoft.Json` package to the portable class library project. Replace `App1` with the name you gave your solution.
 
     ```powershell
-    Install-Package Microsoft.Identity.Client -ProjectName App1 -pre
+    Install-Package Microsoft.Identity.Client -ProjectName App1 -Version 1.1.4-preview0002
     Install-Package Newtonsoft.Json -ProjectName App1
-    Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -pre
+    Install-Package Microsoft.Identity.Client -ProjectName App1.UWP -Version 1.1.4-preview0002
     ```
 
 ## Edit the .NET standard class library project
@@ -44,6 +44,8 @@ application. For more information on creating Android and iOS projects using Xam
 1. Edit the **app.xaml.cs** file in the portable class library project. Replace the `using` section with the following:
 
     ```csharp
+    using Xamarin.Forms;
+    using Xamarin.Forms.Xaml;
     using Microsoft.Identity.Client;
     ```
 
@@ -85,50 +87,48 @@ application. For more information on creating Android and iOS projects using Xam
 
 1. Replace the `YOUR_CLIENT_ID` placeholder with the App ID that was generated when the application was registered.
 
-1. Edit the **MainPage.xaml** file. Replace the generated label control with the following:
+1. Edit the **MainPage.xaml** file. Replace the generated `StackLayout` control with the following:
 
     ```xml
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="MSAL Xamarin Forms Sample" VerticalOptions="Start" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
-            <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
-            <StackLayout x:Name="slUser" IsVisible="False" Padding="5,10">
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="DisplayName " FontAttributes="Bold" />
-                    <Label x:Name="lblDisplayName" />
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="GivenName " FontAttributes="Bold" />
-                    <Label x:Name="lblGivenName" />
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Surname " FontAttributes="Bold" />
-                    <Label x:Name="lblSurname" />
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Id " FontAttributes="Bold" />
-                    <Label x:Name="lblId" />
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="UserPrincipalName " FontAttributes="Bold" />
-                    <Label x:Name="lblUserPrincipalName" />
-                </StackLayout>
+    <StackLayout>
+        <Label Text="MSAL Xamarin Forms Sample" VerticalOptions="Start" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" />
+        <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+        <StackLayout x:Name="slUser" IsVisible="False" Padding="5,10">
+            <StackLayout Orientation="Horizontal">
+                <Label Text="DisplayName " FontAttributes="Bold" />
+                <Label x:Name="lblDisplayName" />
             </StackLayout>
-            <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
-            <Button x:Name="btnSignInSignOut" Text="Sign in" ed="OnSignInSignOut" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="GivenName " FontAttributes="Bold" />
+                <Label x:Name="lblGivenName" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Surname " FontAttributes="Bold" />
+                <Label x:Name="lblSurname" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Id " FontAttributes="Bold" />
+                <Label x:Name="lblId" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="UserPrincipalName " FontAttributes="Bold" />
+                <Label x:Name="lblUserPrincipalName" />
+            </StackLayout>
         </StackLayout>
-    </ContentPage.Content>
+        <BoxView Color="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+        <Button x:Name="btnSignInSignOut" Text="Sign in" Clicked="OnSignInSignOut" VerticalOptions="End" HorizontalOptions="FillAndExpand"/>
+    </StackLayout>
     ```
 
 1. Edit the **MainPage.xaml.cs** file. Replace the `using` statements with the following:
 
     ```csharp
-    using Microsoft.Identity.Client;
-    using Newtonsoft.Json.Linq;
     using System;
     using System.Linq;
-    using System.Net.Http;
     using Xamarin.Forms;
+    using Microsoft.Identity.Client;
+    using Newtonsoft.Json.Linq;
+    using System.Net.Http;
     ```
 
 1. Add the following methods to the `MainPage.xaml.cs` class:
