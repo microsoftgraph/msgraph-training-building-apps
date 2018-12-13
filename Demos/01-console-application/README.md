@@ -251,10 +251,11 @@ The methods we created use the **async/await** pattern.
         Console.WriteLine("Get People Near Me");
 
         var peopleJson = await GetPeopleNearMe();
-        dynamic people = JObject.Parse(peopleJson);
-        if(null != people)
+
+        if (!string.IsNullOrEmpty(peopleJson))
         {
-            foreach(var p in people.value)
+            dynamic people = JObject.Parse(peopleJson);
+            foreach (var p in people.value)
             {
                 var personType = p.personType;
                 Console.WriteLine("Object:{0}\t\t\t\tClass:{1}\t\tSubclass:{2}", p.displayName, personType["class"], personType.subclass);

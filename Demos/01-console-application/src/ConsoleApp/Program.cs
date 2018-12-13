@@ -86,7 +86,7 @@ namespace ConsoleApp
 
             var peopleJson = await GetPeopleNearMe();
           
-            if (null != peopleJson)
+            if (!string.IsNullOrEmpty(peopleJson))
             {
                 dynamic people = JObject.Parse(peopleJson);
                 foreach (var p in people.value)
