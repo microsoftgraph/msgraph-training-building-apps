@@ -1,6 +1,7 @@
 ﻿using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
+
     public class AuthenticationHelper
     {
         // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
@@ -17,7 +19,7 @@ namespace ConsoleApp
 
         public static PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
 
-        private static GraphServiceClient graphClient = null;
+        private static GraphServiceClient graphClient = null;       
 
         // Get an access token for the given context and resourceId. An attempt is first made to
         // acquire the token silently. If that fails, then we try to acquire the token by prompting the user.
@@ -57,7 +59,10 @@ namespace ConsoleApp
             AuthenticationResult authResult = null;
             try
             {
-                authResult = await IdentityClientApp.AcquireTokenSilentAsync(Scopes, IdentityClientApp.Users.FirstOrDefault());
+                IEnumerable<IAccount> accounts = await IdentityClientApp.GetAccountsAsync();
+                IAccount firstAccount = accounts.FirstOrDefault();
+
+                authResult = await IdentityClientApp.AcquireTokenSilentAsync(Scopes, firstAccount);                
                 return authResult.AccessToken;
             }
             catch (MsalUiRequiredException ex)
@@ -69,7 +74,6 @@ namespace ConsoleApp
 
                 return authResult.AccessToken;
             }
-
         }
 
         /// <summary>
@@ -77,12 +81,11 @@ namespace ConsoleApp
         /// </summary>
         public static void SignOut()
         {
-            foreach (var user in IdentityClientApp.Users)
+            foreach (var user in IdentityClientApp.GetAccountsAsync().Result)
             {
-                IdentityClientApp.Remove(user);
+                IdentityClientApp.RemoveAsync(user);
             }
             graphClient = null;
-
         }
     }
 }
