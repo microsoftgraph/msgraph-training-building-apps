@@ -8,12 +8,12 @@ In this demo you will create a .NET console application from scratch using .NET 
  
 2. Select **New registration**. On the **Register an application** page, set the values as follows. 
  
-* Set **Name** to **Console Application Microsoft Graph**. 
+* Set **Name** to **ConsoleDemo**. 
 * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
 * Leave **Redirect URI** empty. 
 * Choose **Register**. 
  
-3. On the **Console Application Microsoft Graph** page, copy the values of both the **Application (client) ID** and the **Directory (tenant) ID**. Save these two values, since you will need them later. 
+3. On the **ConsoleDemo** page, copy the values of both the **Application (client) ID** and the **Directory (tenant) ID**. Save these two values, since you will need them later. 
  
 4. Select the **Add a Redirect URI** link. On the **Redirect URIs** page, locate the **Suggested Redirect URIs for public clients (mobile, desktop)** section. Select the URI that begins with `msal` **and** the **urn:ietf:wg:oauth:2.0:oob** URI. 
  
