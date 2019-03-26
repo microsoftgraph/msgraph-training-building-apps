@@ -21,29 +21,22 @@ Open the Visual Studio installer and enable the **.NET desktop development**, **
 
 In this exercise you will create a .NET console application from scratch using .NET Framework 4.7.0, the Microsoft Graph SDK, and the Microsoft Authentication Library (MSAL).
 
-### Register the console application
-
-1. Go to the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
-
-1. Select the **Add an app** button.
-
-    ![Screenshot of the Application Registration Portal.](Images/01.png)
-
-1. On the next page, provide an application name. Select the **Create** button.
-
-    ![Screenshot of the Application Registration Portal registration page.](Images/02.png)
-
-1. After the application is created, an app ID is shown on the screen. Copy this ID. You will use it as the client ID within the console application's **app.config** file.
-
-    ![Screenshot of the registration page with the application ID highlighted.](Images/03.png)
-
-1. Select the **Add Platform** button on the registration page. Choose **Native Application** in the dialog box.
-
-    ![Screenshot of Add Platform dialog box with Native application highlighted.](Images/03b.png)
-
-1. Once completed, move to the bottom of the page and select **Save**.
-
-    ![Screenshot highlighting save button.](Images/03f.png)
+## Register the application 
+ 
+1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
+ 
+2. Select **New registration**. On the **Register an application** page, set the values as follows. 
+ 
+* Set **Name** to **ConsoleDemo**. 
+* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
+* Leave **Redirect URI** empty. 
+* Choose **Register**. 
+ 
+3. On the **ConsoleDemo** page, copy the values of both the **Application (client) ID** and the **Directory (tenant) ID**. Save these two values, since you will need them later. 
+ 
+4. Select the **Add a Redirect URI** link. On the **Redirect URIs** page, locate the **Suggested Redirect URIs for public clients (mobile, desktop)** section. Select the URI that begins with `msal` **and** the **urn:ietf:wg:oauth:2.0:oob** URI. 
+ 
+5. Open the sample solution in Visual Studio and then open the **Constants.cs** file. Change the **Tenant** string to the **Directory (tenant) ID** value you copied earlier. Change the **ClientIdForUserAuthn** string to the **Application (client) ID** value. 
 
 ### Create the project in Visual Studio 2017
 
