@@ -302,15 +302,27 @@ There are many sample applications that demonstrate how to use the Microsoft Gra
 
 ### Register the JavaScript application
 
-1. Start by visiting the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
 
-    ![Screenshot of Application Registration Portal registration page.](Images/07.png)
+1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
+ 
+1. Select **New registration**. On the **Register an application** page, set the values as follows. 
+ 
+* Set **Name** to **AngularDemo**. 
+* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
+* Under **Redirect URI**, set the first drop-down to `Web` and set the value to **http://localhost:8080** 
+* Choose **Register**. 
 
-1. Copy the app ID. You will use this to configure the app.
+1. Choose **Register**. On the **AngularDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
-1. Under the platform menu, choose **Add Platform > Web**. Make sure the **Allow Implicit Flow** checkbox is selected, and enter **http://localhost:8080** as the redirect URL. Make sure to save your changes.
+1. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
 
-    ![Screenshot of platforms menu.](Images/08.png)
+1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
+
+1. Copy the client secret value before you leave this page. You will need it in the next step.
+    > [!IMPORTANT]
+    > This client secret is never shown again, so make sure you copy it now.
+
+If you have an existing application that you have registered in the past, feel free to use that instead of creating a new registration.
 
 ### Create the application
 
@@ -375,23 +387,40 @@ This solution will require an organizational account. An admin is required to pr
 
 1. Clone or download the following project: [Build a multi-tenant daemon with the Azure AD v2.0 endpoint](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2)
 
-1. Open the [Application Registration Portal](https://apps.dev.microsoft.com) and register a new application:
+1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
+ 
+1. Select **New registration**. On the **Register an application** page, set the values as follows. 
+ 
+* Set **Name** to **AzureSyncFunctionDemo**. 
+* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
+* Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
+* Choose **Register**. 
 
-1. Copy the **App ID** assigned to your app.
+1. Choose **Register**. On the **AzureSyncFunctionDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
-1. Generate an **app secret** of the type **password**, and copy it for later. In production apps you should always use certificates as your app secrets, but for this sample you will use a simple shared secret password.
+1. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
 
-1. Add the **Web** platform for your app.
+1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
 
-1. Enter two **Redirect URIs**:
-    - **https://localhost:44316/**
-    - **https://localhost:44316/Account/GrantPermissions**
+1. Copy the client secret value before you leave this page. You will need it in the next step.
+    > [!IMPORTANT]
+    > This client secret is never shown again, so make sure you copy it now.
+
+1. In the list of pages for the app, select **API permissions** 
+    - Click the **Add a permission** button and then, 
+    - Ensure that the **Microsoft APIs** tab is selected 
+    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph** 
+    - In the **Delegated permissions** section, ensure that the right permissions are checked. Use the search box if necessary.
+    - **User.Read.All** 
+    - Select the **Add permissions** button 
 
 ### Configure your app for admin consent
 
-1. In order to use the Azure AD v2.0 admin consent endpoint, you'll need to declare the application permissions your app will use ahead of time. While still in the registration portal, locate the **Microsoft Graph Permissions** section on your app registration. Under **Application Permissions**, add the **User.Read.All** permission. Be sure to save your app registration.
+In order to use the v2.0 admin consent endpoint, you'll need to declare the application permissions your app will use ahead of time.  While still in the registration portal,
 
-1. After downloading the sample, open it using Visual Studio 2017. Open the **Web.config** file, and replace the `ida:ClientId` value with the app ID you copied above. Replace the `ida:ClientSecret` value with the app secret you copied above.
+- Locate the **API Permissions** section on your app registration.
+- Under **Add Permission**, then **Delegated Permissions** select the `User.Read.All` permission.
+- Be sure to click on **Add permissions**
 
 ### Run the sample
 
@@ -627,15 +656,24 @@ application. For more information on creating Android and iOS projects using Xam
 
 ### Register the Xamarin application
 
-1. Visit the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
 
-1. Select the **Add an app** button and enter a name for the application. Select **Create**.
-
-1. Copy the **Application Id** that is generated.
-
-1. In the **Platforms** menu, select **Add Platform**. Add a **Native Application** platform. Copy the generated custom redirect URL.
-
-1. Under **Microsoft Graph Permissions**, add the **User.Read** delegated permission. Select **Save** to ensure changes are committed.
+1. Navigate to the [Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page. 
+1. Select **New registration**. 
+1. When the **Register an application page** appears, enter your application's registration information: 
+    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `XamarinApp Sample`. 
+    - In the **Supported account types** section, select **Accounts in any organizational directory**. 
+1. Select **Register** to create the application. 
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project. 
+1. In the list of pages for the app, select **Manifest**, and: 
+    - In the manifest editor, set the ``allowPublicClient`` property to **true** 
+    - Select **Save** in the bar above the manifest editor. 
+1. In the list of pages for the app, select **API permissions** 
+    - Click the **Add a permission** button and then, 
+    - Ensure that the **Microsoft APIs** tab is selected 
+    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph** 
+    - In the **Delegated permissions** section, ensure that the right permissions are checked. Use the search box if necessary.
+    - **User.Read** 
+    - Select the **Add permissions** button 
 
 ### Create the application in Visual Studio
 

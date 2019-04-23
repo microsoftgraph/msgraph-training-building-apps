@@ -4,15 +4,26 @@ There are many sample applications that demonstrate how to use the Microsoft Gra
 
 ## Register the application
 
-1. Start by visiting the [Application Registration Portal](https://apps.dev.microsoft.com/) to register the application.
+1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
+ 
+1. Select **New registration**. On the **Register an application** page, set the values as follows. 
+ 
+* Set **Name** to **AngularDemo**. 
+* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
+* Under **Redirect URI**, set the first drop-down to `Web` and set the value to **http://localhost:8080** 
+* Choose **Register**. 
 
-    ![Screenshot of Application Registration Portal registration page.](../../Images/07.png)
+1. Choose **Register**. On the **AngularDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
-1. Copy the app ID. You will use this to configure the app.
+1. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
 
-1. Under the platform menu, choose **Add Platform > Web**. Make sure the **Allow Implicit Flow** checkbox is selected, and enter **http://localhost:8080** as the redirect URL. Make sure to save your changes.
+1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
 
-    ![Screenshot of platforms menu.](../../Images/08.png)
+1. Copy the client secret value before you leave this page. You will need it in the next step.
+    > [!IMPORTANT]
+    > This client secret is never shown again, so make sure you copy it now.
+
+If you have an existing application that you have registered in the past, feel free to use that instead of creating a new registration.
 
 ## Create the application
 

@@ -19,21 +19,33 @@ For more information on the concepts used in this sample, be sure to read the [v
 Follow the steps below to run the application and create your own multi-tenant daemon.  We reccommend using Visual Studio 2015 to do so.
 
 ### Register an app
-Create a new app at [apps.dev.microsoft.com](https://apps.dev.microsoft.com), or follow these [detailed steps](https://docs.microsoft.com/azure/active-directory/develop/active-directory-v2-app-registration).  Make sure to:
+1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
+ 
+1. Select **New registration**. On the **Register an application** page, set the values as follows. 
+ 
+* Set **Name** to **AzureSyncFunctionDemo**. 
+* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
+* Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
+* Choose **Register**. 
 
-- Copy down the **Application Id** assigned to your app, you'll need it soon.
-- Add the **Web** platform for your app.
-- Enter two **Redirect URI**s. The base URL for this sample, `https://localhost:44316/`, as well as `https://localhost:44316/Account/GrantPermissions`.  These are the locations which the v2.0 endpoint will be allowed to return to after authentication.
-- Generate an **Application Secret** of the type **password**, and copy it for later.  Note that in production apps you should always use certificates as your application secrets, but for this sample we will use a simple shared secret password.
+1. Choose **Register**. On the **AzureSyncFunctionDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
+
+1. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
+
+1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
+
+1. Copy the client secret value before you leave this page. You will need it in the next step.
+    > [!IMPORTANT]
+    > This client secret is never shown again, so make sure you copy it now.
 
 If you have an existing application that you have registered in the past, feel free to use that instead of creating a new registration.
 
 ### Configure your app for admin consent
 In order to use the v2.0 admin consent endpoint, you'll need to declare the application permissions your app will use ahead of time.  While still in the registration portal,
 
-- Locate the **Microsoft Graph Permissions** section on your app registration.
-- Under **Application Permissions**, add the `User.Read.All` permission.
-- Be sure to **Save** your app registration.
+- Locate the **API Permissions** section on your app registration.
+- Under **Add Permission**, then **Delegated Permissions** select the `User.Read.All` permission.
+- Be sure to click on **Add permissions**
 
 ### Download & configure the sample code
 You can download this repo as a .zip file using the button above, or run the following command:

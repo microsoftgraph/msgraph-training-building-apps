@@ -4,11 +4,14 @@ using Xamarin.Forms;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
+using System.Collections.Generic;
 
 namespace App1
 {
     public partial class MainPage : ContentPage
     {
+        private IEnumerable<IAccount> _accounts;
+
         public MainPage()
         {
             InitializeComponent();
@@ -19,8 +22,11 @@ namespace App1
             // let's see if we have a user already
             try
             {
+                _accounts = await App.PCA.GetAccountsAsync();
+                IAccount firstAccount = _accounts.FirstOrDefault();
+
                 AuthenticationResult ar =
-                    await App.PCA.AcquireTokenSilentAsync(App.Scopes, App.PCA.Users.FirstOrDefault());
+                    await App.PCA.AcquireTokenSilentAsync(App.Scopes, firstAccount);
                 RefreshUserData(ar.AccessToken);
                 btnSignInSignOut.Text = "Sign out";
             }
@@ -42,9 +48,9 @@ namespace App1
                 }
                 else
                 {
-                    foreach (var user in App.PCA.Users)
+                    foreach (var user in _accounts)
                     {
-                        App.PCA.Remove(user);
+                       await  App.PCA.RemoveAsync(user);
                     }
                     slUser.IsVisible = false;
                     btnSignInSignOut.Text = "Sign in";
