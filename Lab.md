@@ -56,7 +56,7 @@ In this exercise you will create a .NET console application from scratch using .
 
     ```xml
     <appSettings>
-        <add key="clientId" value="a943d247-89a1-4a21-9a62-c9714056c456"/>
+        <add key="clientId" value="YOUR CLIENT APPLICATION ID"/>
     </appSettings>
     ```
 
