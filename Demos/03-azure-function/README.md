@@ -11,11 +11,9 @@ This solution will require an organizational account. An admin is required to pr
 1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
  
 1. Select **New registration**. On the **Register an application** page, set the values as follows. 
- 
     * Set **Name** to **AzureSyncFunctionDemo**. 
     * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
     * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
-
 1. Choose **Register**. On the **AzureSyncFunctionDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
 1. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
