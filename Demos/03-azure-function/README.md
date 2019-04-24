@@ -8,11 +8,11 @@ This solution will require an organizational account. An admin is required to pr
 
 1. Clone or download the following project: [Build a multi-tenant daemon with the Azure AD v2.0 endpoint](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2)
 
-1. Navigate to [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
- 
-1. Select **New registration**. On the **Register an application** page, set the values as follows. 
-    * Set **Name** to **AzureSyncFunctionDemo**. 
-    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
+1. Navigate to [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
+
+1. Select **New registration**. On the **Register an application** page, set the values as follows.
+    * Set **Name** to **AzureSyncFunctionDemo**.
+    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
     * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
 1. Choose **Register**. On the **AzureSyncFunctionDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
@@ -24,13 +24,13 @@ This solution will require an organizational account. An admin is required to pr
     > [!IMPORTANT]
     > This client secret is never shown again, so make sure you copy it now.
 
-1. In the list of pages for the app, select **API permissions** 
-    - Click the **Add a permission** button and then, 
-    - Ensure that the **Microsoft APIs** tab is selected 
-    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph** 
+1. In the list of pages for the app, select **API permissions**
+    - Click the **Add a permission** button and then,
+    - Ensure that the **Microsoft APIs** tab is selected
+    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
     - In the **Delegated permissions** section, ensure that the right permissions are checked. Use the search box if necessary.
-    - **User.Read** 
-    - Select the **Add permissions** button 
+    - **User.Read**
+    - Select the **Add permissions** button
 
 ## Configure your app for admin consent
 

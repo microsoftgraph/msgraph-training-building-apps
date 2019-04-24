@@ -5,27 +5,27 @@ application. For more information on creating Android and iOS projects using Xam
 
 ## Register the application
 
-1. Navigate to the [Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page. 
-1. Select **New registration**. 
-1. When the **Register an application page** appears, enter your application's registration information: 
+1. Navigate to the [Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
+1. Select **New registration**.
+1. When the **Register an application page** appears, enter your application's registration information:
     - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `XamarinApp Sample`. 
-    - In the **Supported account types** section, select **Accounts in any organizational directory**. 
-1. Select **Register** to create the application. 
-1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project. 
-1. In the list of pages for the app, select **Manifest**, and: 
-    - In the manifest editor, set the ``allowPublicClient`` property to **true** 
-    - Select **Save** in the bar above the manifest editor. 
-1. In the list of pages for the app, select **API permissions** 
-    - Click the **Add a permission** button and then, 
-    - Ensure that the **Microsoft APIs** tab is selected 
-    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph** 
+    - In the **Supported account types** section, select **Accounts in any organizational directory**.
+1. Select **Register** to create the application.
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
+1. In the list of pages for the app, select **Manifest**, and:
+    - In the manifest editor, set the ``allowPublicClient`` property to **true**
+    - Select **Save** in the bar above the manifest editor.
+1. In the list of pages for the app, select **API permissions**
+    - Click the **Add a permission** button and then,
+    - Ensure that the **Microsoft APIs** tab is selected
+    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
     - In the **Delegated permissions** section, ensure that the right permissions are checked. Use the search box if necessary.
-    - **User.Read** 
-    - Select the **Add permissions** button 
+    - **User.Read**
+    - Select the **Add permissions** button
 
 ## Create the application in Visual Studio
 
-1. Open **Visual Studio 2017**. Create a new **Cross-Platform/Mobile App (Xamarin.Forms)** project. 
+1. Open **Visual Studio 2017**. Create a new **Cross-Platform/Mobile App (Xamarin.Forms)** project.
 
 1. When prompted for the template type, choose **Blank app**.  Unselect iOS and Android from platform and choose **.NET Standard** as the code sharing strategy.
 

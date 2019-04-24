@@ -21,22 +21,22 @@ Open the Visual Studio installer and enable the **.NET desktop development**, **
 
 In this exercise you will create a .NET console application from scratch using .NET Framework 4.7.0, the Microsoft Graph SDK, and the Microsoft Authentication Library (MSAL).
 
-## Register the application 
- 
-1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
- 
-1. Select **New registration**. On the **Register an application** page, set the values as follows. 
- 
-    * Set **Name** to **ConsoleDemo**. 
-    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
-    * Leave **Redirect URI** empty. 
-    * Choose **Register**. 
- 
-1. On the **ConsoleDemo** page, copy the values of both the **Application (client) ID** and the **Directory (tenant) ID**. Save these two values, since you will need them later. 
- 
-1. Select the **Add a Redirect URI** link. On the **Redirect URIs** page, locate the **Suggested Redirect URIs for public clients (mobile, desktop)** section. Select the URI that begins with `msal` **and** the **urn:ietf:wg:oauth:2.0:oob** URI. 
- 
-1. Open the sample solution in Visual Studio and then open the **Constants.cs** file. Change the **Tenant** string to the **Directory (tenant) ID** value you copied earlier. Change the **ClientIdForUserAuthn** string to the **Application (client) ID** value. 
+## Register the application
+
+1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
+
+1. Select **New registration**. On the **Register an application** page, set the values as follows.
+
+    * Set **Name** to **ConsoleDemo**.
+    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
+    * Leave **Redirect URI** empty.
+    * Choose **Register**.
+
+1. On the **ConsoleDemo** page, copy the values of both the **Application (client) ID** and the **Directory (tenant) ID**. Save these two values, since you will need them later.
+
+1. Select the **Add a Redirect URI** link. On the **Redirect URIs** page, locate the **Suggested Redirect URIs for public clients (mobile, desktop)** section. Select the URI that begins with `msal` **and** the **urn:ietf:wg:oauth:2.0:oob** URI.
+
+1. Open the sample solution in Visual Studio and then open the **Constants.cs** file. Change the **Tenant** string to the **Directory (tenant) ID** value you copied earlier. Change the **ClientIdForUserAuthn** string to the **Application (client) ID** value.
 
 ### Create the project in Visual Studio 2017
 
@@ -302,14 +302,13 @@ There are many sample applications that demonstrate how to use the Microsoft Gra
 
 ### Register the JavaScript application
 
+1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
 
-1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
- 
-1. Select **New registration**. On the **Register an application** page, set the values as follows. 
- 
-* Set **Name** to **AngularDemo**. 
-* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
-* Under **Redirect URI**, set the first drop-down to `Web` and set the value to **http://localhost:8080** 
+1. Select **New registration**. On the **Register an application** page, set the values as follows.
+
+* Set **Name** to **AngularDemo**.
+* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
+* Under **Redirect URI**, set the first drop-down to `Web` and set the value to **http://localhost:8080**
 
 1. Choose **Register**. On the **AngularDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
@@ -386,12 +385,12 @@ This solution will require an organizational account. An admin is required to pr
 
 1. Clone or download the following project: [Build a multi-tenant daemon with the Azure AD v2.0 endpoint](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2)
 
-1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
- 
-1. Select **New registration**. On the **Register an application** page, set the values as follows. 
- 
+1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
+
+1. Select **New registration**. On the **Register an application** page, set the values as follows.
+
 * Set **Name** to **AzureSyncFunctionDemo**. 
-* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
+* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
 * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
 
 1. Choose **Register**. On the **AzureSyncFunctionDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
@@ -404,13 +403,13 @@ This solution will require an organizational account. An admin is required to pr
     > [!IMPORTANT]
     > This client secret is never shown again, so make sure you copy it now.
 
-1. In the list of pages for the app, select **API permissions** 
-    - Click the **Add a permission** button and then, 
-    - Ensure that the **Microsoft APIs** tab is selected 
-    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph** 
+1. In the list of pages for the app, select **API permissions**
+    - Click the **Add a permission** button and then,
+    - Ensure that the **Microsoft APIs** tab is selected
+    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
     - In the **Delegated permissions** section, ensure that the right permissions are checked. Use the search box if necessary.
-    - **User.Read.All** 
-    - Select the **Add permissions** button 
+    - **User.Read.All**
+    - Select the **Add permissions** button
 
 ### Configure your app for admin consent
 
@@ -655,23 +654,23 @@ application. For more information on creating Android and iOS projects using Xam
 ### Register the Xamarin application
 
 
-1. Navigate to the [Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page. 
-1. Select **New registration**. 
-1. When the **Register an application page** appears, enter your application's registration information: 
-    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `XamarinApp Sample`. 
-    - In the **Supported account types** section, select **Accounts in any organizational directory**. 
-1. Select **Register** to create the application. 
-1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project. 
-1. In the list of pages for the app, select **Manifest**, and: 
-    - In the manifest editor, set the ``allowPublicClient`` property to **true** 
-    - Select **Save** in the bar above the manifest editor. 
-1. In the list of pages for the app, select **API permissions** 
-    - Click the **Add a permission** button and then, 
-    - Ensure that the **Microsoft APIs** tab is selected 
-    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph** 
+1. Navigate to the [Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
+1. Select **New registration**.
+1. When the **Register an application page** appears, enter your application's registration information:
+    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `XamarinApp Sample`.
+    - In the **Supported account types** section, select **Accounts in any organizational directory**.
+1. Select **Register** to create the application.
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
+1. In the list of pages for the app, select **Manifest**, and:
+    - In the manifest editor, set the ``allowPublicClient`` property to **true**
+    - Select **Save** in the bar above the manifest editor.
+1. In the list of pages for the app, select **API permissions**
+    - Click the **Add a permission** button and then,
+    - Ensure that the **Microsoft APIs** tab is selected
+    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
     - In the **Delegated permissions** section, ensure that the right permissions are checked. Use the search box if necessary.
-    - **User.Read** 
-    - Select the **Add permissions** button 
+    - **User.Read**
+    - Select the **Add permissions** button
 
 ### Create the application in Visual Studio
 

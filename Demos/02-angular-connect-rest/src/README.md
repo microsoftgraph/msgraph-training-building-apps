@@ -27,24 +27,24 @@ To use the Microsoft Graph Connect sample for AngularJS, you need the following:
 
 ## Register the application
 
-1. Sign into the [App Registration Portal](https://apps.dev.microsoft.com/) using either your personal or work or school account.
+1. Navigate to [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
+ 
+1. Select **New registration**. On the **Register an application** page, set the values as follows. 
+    * Set **Name** to **AngularDemo**. 
+    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
+    * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **http://localhost:8080** 
 
-2. Choose **Add an app**.
+1. Choose **Register**. On the **AngularDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
-3. Enter a name for the app, and choose **Create application**. 
-	
-   The registration page displays, listing the properties of your app.
+1. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
 
-4. Copy the Application Id. This is the unique identifier for your app. 
+1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
 
-5. Under **Platforms**, choose **Add Platform**.
+1. Copy the **client secret** value before you leave this page. You will need it in the next step.
+    > [!IMPORTANT]
+    > This client secret is never shown again, so make sure you copy it now.
 
-6. Choose **Web**.
-
-7. Make sure the **Allow Implicit Flow** check box is selected, and enter *http://localhost:8080* as the Redirect URI. 
-
-8. Choose **Save**.
-
+If you have an existing application that you have registered in the past, feel free to use that instead of creating a new registration.
 
 ## Build and run the sample
 
