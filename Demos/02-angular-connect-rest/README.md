@@ -11,7 +11,6 @@ There are many sample applications that demonstrate how to use the Microsoft Gra
 * Set **Name** to **AngularDemo**. 
 * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
 * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **http://localhost:8080** 
-* Choose **Register**. 
 
 1. Choose **Register**. On the **AngularDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 

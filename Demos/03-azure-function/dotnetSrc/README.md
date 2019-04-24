@@ -23,10 +23,9 @@ Follow the steps below to run the application and create your own multi-tenant d
  
 1. Select **New registration**. On the **Register an application** page, set the values as follows. 
  
-* Set **Name** to **AzureSyncFunctionDemo**. 
-* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
-* Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
-* Choose **Register**. 
+    * Set **Name** to **AzureSyncFunctionDemo**. 
+    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
+    * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
 
 1. Choose **Register**. On the **AzureSyncFunctionDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
