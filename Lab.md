@@ -304,19 +304,19 @@ There are many sample applications that demonstrate how to use the Microsoft Gra
 
 1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
 
-1. Select **New registration**. On the **Register an application** page, set the values as follows.
+2. Select **New registration**. On the **Register an application** page, set the values as follows.
 
-* Set **Name** to **AngularDemo**.
-* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
-* Under **Redirect URI**, set the first drop-down to `Web` and set the value to **http://localhost:8080**
+    * Set **Name** to **AngularDemo**.
+    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
+    * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **http://localhost:8080**
 
-1. Choose **Register**. On the **AngularDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
+3. Choose **Register**. On the **AngularDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
-1. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
+4. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
 
-1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
+5. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
 
-1. Copy the client secret value before you leave this page. You will need it in the next step.
+6. Copy the client secret value before you leave this page. You will need it in the next step.
     > [!IMPORTANT]
     > This client secret is never shown again, so make sure you copy it now.
 
@@ -385,25 +385,25 @@ This solution will require an organizational account. An admin is required to pr
 
 1. Clone or download the following project: [Build a multi-tenant daemon with the Azure AD v2.0 endpoint](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2)
 
-1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
+2. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
 
-1. Select **New registration**. On the **Register an application** page, set the values as follows.
+3. Select **New registration**. On the **Register an application** page, set the values as follows.
 
-* Set **Name** to **AzureSyncFunctionDemo**. 
-* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
-* Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
+    * Set **Name** to **AzureSyncFunctionDemo**. 
+    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
+    * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
 
-1. Choose **Register**. On the **AzureSyncFunctionDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
+4. Choose **Register**. On the **AzureSyncFunctionDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
-1. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
+5. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
 
-1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
+6. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
 
-1. Copy the client secret value before you leave this page. You will need it in the next step.
+7. Copy the client secret value before you leave this page. You will need it in the next step.
     > [!IMPORTANT]
-    > This client secret is never shown again, so make sure you copy it now.
+    > This **client secret** is never shown again, so make sure you copy it now.
 
-1. In the list of pages for the app, select **API permissions**
+8. In the list of pages for the app, select **API permissions**
     - Click the **Add a permission** button and then,
     - Ensure that the **Microsoft APIs** tab is selected
     - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
