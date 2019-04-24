@@ -19,10 +19,9 @@ For more information on the concepts used in this sample, be sure to read the [v
 Follow the steps below to run the application and create your own multi-tenant daemon.  We reccommend using Visual Studio 2015 to do so.
 
 ### Register an app
-1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
+1. Navigate to [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
  
-1. Select **New registration**. On the **Register an application** page, set the values as follows. 
- 
+1. Select **New registration**. On the **Register an application** page, set the values as follows.
     * Set **Name** to **AzureSyncFunctionDemo**. 
     * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
     * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
@@ -33,7 +32,7 @@ Follow the steps below to run the application and create your own multi-tenant d
 
 1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
 
-1. Copy the client secret value before you leave this page. You will need it in the next step.
+1. Copy the **client secret** value before you leave this page. You will need it in the next step.
     > [!IMPORTANT]
     > This client secret is never shown again, so make sure you copy it now.
 

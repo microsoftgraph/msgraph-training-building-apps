@@ -8,7 +8,7 @@ This solution will require an organizational account. An admin is required to pr
 
 1. Clone or download the following project: [Build a multi-tenant daemon with the Azure AD v2.0 endpoint](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2)
 
-1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
+1. Navigate to [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
  
 1. Select **New registration**. On the **Register an application** page, set the values as follows. 
     * Set **Name** to **AzureSyncFunctionDemo**. 
@@ -20,7 +20,7 @@ This solution will require an organizational account. An admin is required to pr
 
 1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
 
-1. Copy the client secret value before you leave this page. You will need it in the next step.
+1. Copy the **client secret** value before you leave this page. You will need it in the next step.
     > [!IMPORTANT]
     > This client secret is never shown again, so make sure you copy it now.
 
