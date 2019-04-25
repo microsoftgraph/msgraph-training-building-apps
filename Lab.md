@@ -48,7 +48,7 @@ In this exercise you will create a .NET console application from scratch using .
 
     ```powershell
     Install-Package "Microsoft.Graph"
-    Install-Package "Microsoft.Identity.Client" -version 1.1.4-preview0002
+    Install-Package "Microsoft.Identity.Client" -version 2.7.1
     Install-Package "System.Configuration.ConfigurationManager"
     ```
 
