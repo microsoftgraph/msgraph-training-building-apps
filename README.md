@@ -17,13 +17,15 @@ In this lab, you will walk through building different types of applications leve
 
 ## Watch the Module
 
-This module has been recorded and is available in the Office Development YouTube channel: [Building Microsoft Graph applications](https://www.youtube.com/watch?v=nLq9jXpWAgk)
-
+This module has been recorded and is available in the Office Development YouTube channel: [Building Microsoft Graph applications](https://www.youtube.com/watch?v=nLq9jXpWAgk) 
+   > [!IMPORTANT]
+    > We periodically update libraries used in the above demo samples and therefore the video may not necessary reflect the same versions at the time you are watching it. You may also experience minor code changes.
 ## Contributors
 
 |        Roles         |                            Author(s)                             |
 | -------------------- | ---------------------------------------------------------------- |
 | Lab Manuals / Slides | Andrew Connell (Microsoft MVP, Voitanos) @andrewconnell          |
+| Manuals Updates      | Titus Gicheru (Microsoft)                                        |
 | QA                   | Julie Turner (Microsoft MVP, Sympraxis Consulting) @juliemturner |
 | Sponsor / Support    | Yina Arenas (Microsoft) @yina_arenas                             |
 
