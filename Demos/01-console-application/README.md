@@ -3,21 +3,21 @@
 In this demo you will create a .NET console application from scratch using .NET Framework 4.7.2, the Microsoft Graph SDK, and the Microsoft Authentication Library (MSAL).
 
 ## Register the application 
- 
-1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**. 
- 
-2. Select **New registration**. On the **Register an application** page, set the values as follows. 
- 
-* Set **Name** to **ConsoleDemo**. 
-* Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**. 
-* Leave **Redirect URI** empty. 
-* Choose **Register**. 
- 
-3. On the **ConsoleDemo** page, copy the values of both the **Application (client) ID** and the **Directory (tenant) ID**. Save these two values, since you will need them later. 
- 
+
+1. Navigate to the [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
+
+2. Select **New registration**. On the **Register an application** page, set the values as follows.
+
+    * Set **Name** to **ConsoleDemo**.
+    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
+    * Leave **Redirect URI** empty.
+    * Choose **Register**.
+
+3. On the **ConsoleDemo** page, copy the values of both the **Application (client) ID** and the **Directory (tenant) ID**. Save these two values, since you will need them later.
+
 4. Select the **Add a Redirect URI** link. On the **Redirect URIs** page, locate the **Suggested Redirect URIs for public clients (mobile, desktop)** section. Select the URI that begins with `msal` **and** the **urn:ietf:wg:oauth:2.0:oob** URI. 
- 
-5. Open the sample solution in Visual Studio and then open the **Constants.cs** file. Change the **Tenant** string to the **Directory (tenant) ID** value you copied earlier. Change the **ClientIdForUserAuthn** string to the **Application (client) ID** value. 
+
+5. Open the sample solution in Visual Studio and then open the **App.config** file. Change the **clientId** string to the **Application (client) ID** value.
 
 ## Create the project in Visual Studio 2017
 

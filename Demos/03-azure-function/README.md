@@ -8,21 +8,33 @@ This solution will require an organizational account. An admin is required to pr
 
 1. Clone or download the following project: [Build a multi-tenant daemon with the Azure AD v2.0 endpoint](https://github.com/Azure-Samples/active-directory-dotnet-daemon-v2)
 
-1. Open the [Application Registration Portal](https://apps.dev.microsoft.com) and register a new application:
+1. Navigate to [the Azure portal - App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) to register your app. Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
 
-1. Copy the **App ID** assigned to your app.
+1. Select **New registration**. On the **Register an application** page, set the values as follows.
+    * Set **Name** to **AzureSyncFunctionDemo**.
+    * Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
+    * Under **Redirect URI**, set the first drop-down to `Web` and set the value to **https://localhost:44316/**
+1. Choose **Register**. On the **AzureSyncFunctionDemo** page, copy the value of the **Application (client) ID** and save it, you will need it in the next step.
 
-1. Generate an **app secret** of the type **password**, and copy it for later. In production apps you should always use certificates as your app secrets, but for this sample you will use a simple shared secret password.
+1. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
 
-1. Add the **Web** platform for your app.
+1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
 
-1. Enter two **Redirect URIs**:
-    - **https://localhost:44316/**
-    - **https://localhost:44316/Account/GrantPermissions**
+1. Copy the **client secret** value before you leave this page. You will need it in the next step.
+    > [!IMPORTANT]
+    > This client secret is never shown again, so make sure you copy it now.
+
+1. In the list of pages for the app, select **API permissions**
+    - Click the **Add a permission** button and then,
+    - Ensure that the **Microsoft APIs** tab is selected
+    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
+    - In the **Delegated permissions** section, ensure that the right permissions are checked. Use the search box if necessary.
+    - **User.Read**
+    - Select the **Add permissions** button
 
 ## Configure your app for admin consent
 
-1. In order to use the Azure AD v2.0 admin consent endpoint, you'll need to declare the application permissions your app will use ahead of time. While still in the registration portal, locate the **Microsoft Graph Permissions** section on your app registration. Under **Application Permissions**, add the **User.Read.All** permission. Be sure to save your app registration.
+1. In order to use the Azure AD v2.0 admin consent endpoint, you'll need to declare the application permissions your app will use ahead of time. While still in the registration portal, locate the **Api Permissions** section on your app registration. Under **Application Permissions**, add the **User.Read.All** permission. Be sure to save your app registration.
 
 1. After downloading the sample, open it using Visual Studio 2017. Open the **Web.config** file, and replace the `ida:ClientId` value with the app ID you copied above. Replace the `ida:ClientSecret` value with the app secret you copied above.
 
