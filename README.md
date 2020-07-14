@@ -1,4 +1,17 @@
-# Microsoft Graph: Building Microsoft Graph Applications
+# [ARCHIVED] Microsoft Graph: Building Microsoft Graph Applications
+
+## IMPORTANT
+
+**This project is being archived. As part of the archival process, we're closing all open issues and pull requests.**
+
+For an updated sample that covers these topics, please see:
+
+- Console app: https://github.com/microsoftgraph/msgraph-training-dotnet-core
+- JavaScript app: https://github.com/microsoftgraph/msgraph-training-javascriptspa
+- Azure Function: https://github.com/microsoftgraph/msgraph-training-azurefunction-csharp
+- Xamarin app: https://github.com/microsoftgraph/msgraph-training-xamarin
+
+**You can continue to use this sample "as-is", but it won't be maintained moving forward. We apologize for any inconvenience.**
 
 This module walks through building applications using multiple technologies.
 
